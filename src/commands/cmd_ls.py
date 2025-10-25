@@ -21,6 +21,8 @@ def cmd_ls(args: list[str]):
             print("Папка пуста")
         else:
             for item in items:
+                if item.name.startswith('.') or item.name == 'desktop.ini':
+                    continue
                 print(item.name)
     else:
         print("Это не папка")

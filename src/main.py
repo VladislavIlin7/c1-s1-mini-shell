@@ -6,7 +6,7 @@ from src.commands.cmd_ls import cmd_ls
 
 
 def main():
-    start_path = r'C:\Users\Public'  # начальный каталог
+    start_path = r'C:\Users\svlad\PycharmProjects'  # начальный каталог
     os.chdir(start_path)
 
     while True:

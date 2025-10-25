@@ -15,11 +15,11 @@ def cmd_cd(args: list[str]):
         target = Path.cwd() / target
 
     if not target.exists():
-        print("Ошибка: такого каталога нет")
+        print("Ошибка такой папки нет")
         return
 
     if not target.is_dir():
-        print("Ошибка: это не каталог")
+        print("Ошибка: это не папка")
         return
 
     os.chdir(target)
