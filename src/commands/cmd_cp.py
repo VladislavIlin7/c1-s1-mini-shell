@@ -1,6 +1,6 @@
 import shutil
 
-from src.commands.resolve import absolute_or_relative
+from src.commands.absolute_or_relative import absolute_or_relative
 
 
 def cmd_cp(args: list[str]):
@@ -14,9 +14,9 @@ def cmd_cp(args: list[str]):
         print("Ошибка: исходный файл не существует")
         return
 
-    if source_path.is_dir():
-        print("Ошибка: это каталог, используйте флаг -г для копирования папок")
-        return
+    # if source_path.is_dir():
+    #     print("Ошибка: это каталог, используйте флаг -г для копирования папок")
+    #     return
 
     try:
         if destination_path.is_dir():

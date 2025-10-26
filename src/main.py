@@ -6,6 +6,7 @@ from src.commands.cmd_cat import cmd_cat
 from src.commands.cmd_cd import cmd_cd
 from src.commands.cmd_cp import cmd_cp
 from src.commands.cmd_ls import cmd_ls
+from src.commands.cmd_mv import cmd_mv
 
 
 def main():
@@ -24,6 +25,9 @@ def main():
             cmd_cat(cmd_input.split())
         elif command == 'cp':
             cmd_cp(cmd_input.split())
+        elif command == 'mv':
+            cmd_mv(cmd_input.split())
+
 
         elif command in ('exit', 'q'):
             break

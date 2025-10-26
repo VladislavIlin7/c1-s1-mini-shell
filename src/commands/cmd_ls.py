@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from src.commands.resolve import absolute_or_relative
+from src.commands.absolute_or_relative import absolute_or_relative
 
 
 def cmd_ls(args: list[str]):
