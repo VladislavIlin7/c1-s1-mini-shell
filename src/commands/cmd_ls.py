@@ -1,11 +1,11 @@
 from pathlib import Path
 
-from src.commands.resolve import resolve
+from src.commands.resolve import absolute_or_relative
 
 
 def cmd_ls(args: list[str]):
     current_cwd = Path.cwd()
-    target = resolve(args[1]) if len(args) > 1 else current_cwd
+    target = absolute_or_relative(args[1]) if len(args) > 1 else current_cwd
 
     if not target.exists():
         print("Нет такой папки")

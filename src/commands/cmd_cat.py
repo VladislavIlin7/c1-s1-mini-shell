@@ -1,11 +1,11 @@
-from src.commands.resolve import resolve
+from src.commands.resolve import absolute_or_relative
 
 
 def cmd_cat(args: list[str]):
     if len(args) < 2:
         print("Укажите путь к файлу")
         return
-    target = resolve(args[1])
+    target = absolute_or_relative(args[1])
 
     if target.is_dir():
         print("Ошибка: указан каталог, а не файл")
