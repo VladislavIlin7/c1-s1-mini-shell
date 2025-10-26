@@ -1,11 +1,7 @@
 from pathlib import Path
 
+from src.commands.resolve import resolve
 
-
-def resolve(path: str) -> Path:
-    current_cwd = Path.cwd()
-    p = Path(path)
-    return p if p.is_absolute() else current_cwd / p
 
 def cmd_ls(args: list[str]):
     current_cwd = Path.cwd()
