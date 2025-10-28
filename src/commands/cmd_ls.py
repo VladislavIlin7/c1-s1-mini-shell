@@ -1,4 +1,5 @@
 import datetime
+import logging
 import os
 import stat
 from pathlib import Path
@@ -14,6 +15,7 @@ def cmd_ls(args: list[str]):
 
     if not target.exists():
         print("Нет такой папки")
+        logging.error("Нет такой папки")
         return
 
     if target.is_dir():
@@ -24,7 +26,7 @@ def cmd_ls(args: list[str]):
 
         if show_long:
             print(f"\n{target}>")
-            print(f"{'MODE':<11} {'SIZE':>10} {'LAST MODIFIED':<17} NAME")
+            print(f"{'MODE':<16} {'SIZE':<5} {'LAST MODIFIED':<20} NAME")
 
         for item in items:
             if item.name.startswith('.') or item.name == 'desktop.ini':

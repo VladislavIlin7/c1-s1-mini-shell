@@ -4,13 +4,20 @@ from pathlib import Path
 
 from src.commands.absolute_or_relative import absolute_or_relative
 
-
 def cmd_rm(args: list[str]):
-    if len(args)<2:
+    if len(args) < 2:
         print("Ошибка: укажите путь для удаления")
         return
 
-    target = absolute_or_relative(args[1])
+    # recursive = '-r' in args  # ➕ добавлено
+    #
+    # # Оставляем только путь
+    # paths = [arg for arg in args[1:] if not arg.startswith('-')]
+    # if not paths:
+    #     print("Ошибка: путь не указан")
+    #     return
+
+    target = absolute_or_relative(args[-1])
 
     if target in (Path('/').resolve(), Path('..').resolve()):
         print("Ошибка: запрещено удалять корневую или родительскую директорию")
@@ -25,6 +32,9 @@ def cmd_rm(args: list[str]):
             os.remove(target)
             print("Файл удалён")
         elif target.is_dir():
+            if args[1] != '-r':
+                print("Ошибка: это каталог. Для удаления используйте флаг -r")
+                return
             confirm = input(f"Вы уверены, что хотите удалить каталог '{target}' со всем содержимым? (y/n): ")
             if confirm.lower() == 'y':
                 shutil.rmtree(target)

@@ -1,7 +1,7 @@
 import shutil
+import os
 
 from src.commands.absolute_or_relative import absolute_or_relative
-
 
 def cmd_mv(args: list[str]):
     if len(args) < 3:
@@ -13,6 +13,10 @@ def cmd_mv(args: list[str]):
 
     if not source_path.exists():
         print("Ошибка: источник не существует")
+        return
+
+    if not os.access(source_path, os.R_OK or os.W_OK):
+        print("Ошибка: недостаточно прав для чтения или записи источника")
         return
 
     try:
