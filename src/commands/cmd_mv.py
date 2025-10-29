@@ -1,17 +1,17 @@
 import shutil
 import os
 import logging
+from pathlib import Path
 
-from src.commands.convert_to_absolute import convert_to_absolute
 
 def cmd_mv(args: list[str]):
-    if len(args) < 3:
+    if len(args) != 3:
         print("Ошибка: укажите источник и назначение")
         logging.error("mv: Not enough arguments")
         return
 
-    source_path = convert_to_absolute(args[1])
-    destination_path = convert_to_absolute(args[2])
+    source_path = Path(args[1])
+    destination_path = Path(args[2])
 
     if not source_path.exists():
         print("Ошибка: источник не существует")

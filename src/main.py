@@ -9,6 +9,10 @@ from src.commands.cmd_cp import cmd_cp
 from src.commands.cmd_ls import cmd_ls
 from src.commands.cmd_mv import cmd_mv
 from src.commands.cmd_rm import cmd_rm
+from src.commands.cmd_tar import cmd_tar
+from src.commands.cmd_untar import cmd_untar
+from src.commands.cmd_unzip import cmd_unzip
+from src.commands.cmd_zip import cmd_zip
 
 logging.basicConfig(
     filename="shell.log",
@@ -47,6 +51,14 @@ def main():
             cmd_mv(parts)
         elif command == 'rm':
             cmd_rm(parts)
+        elif command == 'zip':
+            cmd_zip(parts)
+        elif command == 'unzip':
+            cmd_unzip(parts)
+        elif command == 'tar':
+            cmd_tar(parts)
+        elif command == 'untar':
+            cmd_untar(parts)
         elif command in ('exit', 'q'):
             break
         else:

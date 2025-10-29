@@ -4,7 +4,6 @@ import os
 import stat
 from pathlib import Path
 
-from src.commands.convert_to_absolute import convert_to_absolute
 
 
 def cmd_ls(args: list[str]):
@@ -12,7 +11,7 @@ def cmd_ls(args: list[str]):
     show_long = '-l' in args
 
     if len(args) > 1 and not show_long:
-        target = convert_to_absolute(args[1])
+        target = Path(args[1])
     else:
         target = current_cwd
 

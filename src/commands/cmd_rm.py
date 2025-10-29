@@ -3,7 +3,6 @@ import shutil
 import logging
 from pathlib import Path
 
-from src.commands.convert_to_absolute import convert_to_absolute
 
 def cmd_rm(args: list[str]):
     if len(args) < 2:
@@ -11,7 +10,7 @@ def cmd_rm(args: list[str]):
         logging.error("rm: No path provided")
         return
 
-    target = convert_to_absolute(args[-1])
+    target = Path(args[-1])
 
     if target in (Path('/').resolve(), Path('..').resolve()):
         print("Ошибка: запрещено удалять корневую или родительскую директорию")

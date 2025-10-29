@@ -1,7 +1,7 @@
 import shutil
 import logging
+from pathlib import Path
 
-from src.commands.convert_to_absolute import convert_to_absolute
 
 
 def cmd_cp(args: list[str]):
@@ -10,8 +10,8 @@ def cmd_cp(args: list[str]):
         logging.error("cp: Not enough arguments")
         return
 
-    source_path = convert_to_absolute(args[-2])
-    destination_path = convert_to_absolute(args[-1])
+    source_path = Path(args[-2])
+    destination_path = Path(args[-1])
 
     if not source_path.exists():
         print("Ошибка: исходный файл не существует")

@@ -1,6 +1,5 @@
 import logging
-
-from src.commands.convert_to_absolute import convert_to_absolute
+from pathlib import Path
 
 
 def cmd_cat(args: list[str]):
@@ -8,7 +7,7 @@ def cmd_cat(args: list[str]):
         print("Укажите путь к файлу")
         logging.error("cat: There is no path to the file")
         return
-    target = convert_to_absolute(args[1])
+    target = Path(args[1])
 
     if target.is_dir():
         print("Ошибка: указан каталог, а не файл")

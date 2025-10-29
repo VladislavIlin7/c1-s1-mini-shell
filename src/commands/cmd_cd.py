@@ -2,7 +2,6 @@ from pathlib import Path
 import os
 import logging
 
-from src.commands.convert_to_absolute import convert_to_absolute
 
 
 def cmd_cd(args: list[str]):
@@ -11,7 +10,7 @@ def cmd_cd(args: list[str]):
         os.chdir(home)
         return
 
-    target = convert_to_absolute(Path(args[1]).expanduser())
+    target = Path(args[1]).expanduser()
 
     if not target.exists():
         print("Ошибка такой папки нет")
