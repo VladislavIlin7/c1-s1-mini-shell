@@ -24,4 +24,4 @@ def cmd_cd(args: list[str]):
         return
 
     os.chdir(target)
-    logging.info(f"cd {target}")
+    logging.info(f"Complete cd {target} without errors")

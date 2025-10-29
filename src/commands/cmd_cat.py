@@ -18,7 +18,7 @@ def cmd_cat(args: list[str]):
     try:
         with open(target, 'r', encoding='utf-8') as f:
             print(f.read())
-            logging.info(f"cat {target}")
+            logging.info(f"Complete cat {target} without errors")
     except Exception as e:
         print(f"Ошибка при чтении файла: {e}")
         logging.error("cat: Error reading file")

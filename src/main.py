@@ -24,28 +24,34 @@ def main():
 
     while sys.stdin:
         current_cwd = Path.cwd()
-        cmd_input: str = input(f'{current_cwd}> ')
-        command = cmd_input.split()[0]
-        logging.info(cmd_input)
-        if command == 'ls':
-            cmd_ls(cmd_input.split())
-        elif command == 'cd':
-            cmd_cd(cmd_input.split())
-        elif command == 'cat':
-            cmd_cat(cmd_input.split())
-        elif command == 'cp':
-            cmd_cp(cmd_input.split())
-        elif command == 'mv':
-            cmd_mv(cmd_input.split())
-        elif command == 'rm':
-            cmd_rm(cmd_input.split())
+        cmd_input: str = input(f'{current_cwd}> ').strip()
 
+        if not cmd_input:
+            print('Пустая команда')
+            logging.error('Empty command')
+            continue
+
+        parts = cmd_input.split()
+        command = parts[0]
+        logging.info(cmd_input)
+
+        if command == 'ls':
+            cmd_ls(parts)
+        elif command == 'cd':
+            cmd_cd(parts)
+        elif command == 'cat':
+            cmd_cat(parts)
+        elif command == 'cp':
+            cmd_cp(parts)
+        elif command == 'mv':
+            cmd_mv(parts)
+        elif command == 'rm':
+            cmd_rm(parts)
         elif command in ('exit', 'q'):
             break
         else:
             print(f'Команда не поддерживается: {command}')
             logging.error("Command not supported")
-
 
 if __name__ == "__main__":
     main()

@@ -28,9 +28,10 @@ def cmd_cp(args: list[str]):
                 logging.error("cp: Attempting to copy a directory without a flag -r")
                 return
             shutil.copytree(source_path, destination_path)
+            logging.info(f"Complete cp {source_path} {destination_path} without errors")
         else:
             shutil.copy(source_path, destination_path)
-            logging.info(f"cp {source_path} {destination_path}")
+            logging.info(f"Complete cp {source_path} {destination_path} without errors")
         print("Файл скопирован")
     except Exception as e:
         print(f"Ошибка при копировании: {e}")

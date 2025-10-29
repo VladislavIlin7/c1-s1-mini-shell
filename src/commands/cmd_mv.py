@@ -28,7 +28,7 @@ def cmd_mv(args: list[str]):
             destination_path = destination_path / source_path.name
         shutil.move(source_path, destination_path)
         print("Перемещение выполнено")
-        logging.info(f"mv {source_path} {destination_path}")
+        logging.info(f"Complete mv {source_path} {destination_path} without errors")
     except Exception as e:
         print(f"Ошибка при перемещении: {e}")
         logging.error(f"mv: Error while moving: {e}")

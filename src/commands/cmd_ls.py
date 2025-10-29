@@ -29,6 +29,7 @@ def cmd_ls(args: list[str]):
     items = list(target.iterdir())
     if not items:
         print("Папка пуста")
+        logging.error("Empty folder")
         return
 
     if show_long:
@@ -52,3 +53,4 @@ def cmd_ls(args: list[str]):
                 logging.error(f"ls: Error accessing {item}: {e}")
         else:
             print(item.name)
+    logging.info("Complete ls without errors")
