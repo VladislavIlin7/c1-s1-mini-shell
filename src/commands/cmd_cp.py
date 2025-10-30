@@ -10,28 +10,28 @@ def cmd_cp(args: list[str]):
         logging.error("cp: Not enough arguments")
         return
 
-    source_path = Path(args[-2])
-    destination_path = Path(args[-1])
+    path_from = Path(args[-2])
+    path_to = Path(args[-1])
 
-    if not source_path.exists():
+    if not path_from.exists():
         print("Ошибка: исходный файл не существует")
-        logging.error(f"cp: The source path does not exist: {source_path}")
+        logging.error(f"cp: The source path does not exist: {path_from}")
         return
 
     try:
-        if destination_path.is_dir():
-            destination_path = destination_path / source_path.name
+        if path_to.is_dir():
+            path_to = path_to / path_from.name
 
-        if source_path.is_dir():
+        if path_from.is_dir():
             if args[1] != '-r':
                 print("Ошибка: это каталог, используйте флаг -r для копирования папок")
                 logging.error("cp: Attempting to copy a directory without a flag -r")
                 return
-            shutil.copytree(source_path, destination_path)
-            logging.info(f"Complete cp {source_path} {destination_path} without errors")
+            shutil.copytree(path_from, path_to)
+            logging.info(f"Complete cp {path_from} {path_to} without errors")
         else:
-            shutil.copy(source_path, destination_path)
-            logging.info(f"Complete cp {source_path} {destination_path} without errors")
+            shutil.copy(path_from, path_to)
+            logging.info(f"Complete cp {path_from} {path_to} without errors")
         print("Файл скопирован")
     except Exception as e:
         print(f"Ошибка при копировании: {e}")

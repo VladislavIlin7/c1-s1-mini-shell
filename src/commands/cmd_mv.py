@@ -10,25 +10,25 @@ def cmd_mv(args: list[str]):
         logging.error("mv: Not enough arguments")
         return
 
-    source_path = Path(args[1])
-    destination_path = Path(args[2])
+    path_from = Path(args[1])
+    path_to = Path(args[2])
 
-    if not source_path.exists():
+    if not path_from.exists():
         print("Ошибка: источник не существует")
-        logging.error(f"mv: Source does not exist: {source_path}")
+        logging.error(f"mv: Source does not exist: {path_from}")
         return
 
-    if not os.access(source_path, os.R_OK | os.W_OK):
+    if not os.access(path_from, os.R_OK | os.W_OK):
         print("Ошибка: недостаточно прав для чтения или записи источника")
-        logging.error(f"mv: Insufficient access rights to: {source_path}")
+        logging.error(f"mv: Insufficient access rights to: {path_from}")
         return
 
     try:
-        if destination_path.is_dir():
-            destination_path = destination_path / source_path.name
-        shutil.move(source_path, destination_path)
+        if path_to.is_dir():
+            path_to = path_to / path_from.name
+        shutil.move(path_from, path_to)
         print("Перемещение выполнено")
-        logging.info(f"Complete mv {source_path} {destination_path} without errors")
+        logging.info(f"Complete mv {path_from} {path_to} without errors")
     except Exception as e:
         print(f"Ошибка при перемещении: {e}")
         logging.error(f"mv: Error while moving: {e}")

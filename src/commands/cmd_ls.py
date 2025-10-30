@@ -7,28 +7,23 @@ from pathlib import Path
 
 
 def cmd_ls(args: list[str]):
-    current_cwd = Path.cwd()
     show_long = '-l' in args
-
-    if len(args) > 1 and not show_long:
-        target = Path(args[1])
-    else:
-        target = current_cwd
+    current = Path.cwd()
+    target = Path(args[1]) if len(args) > 1 and not args[1].startswith('-') else current
 
     if not target.exists():
         print("Нет такой папки")
-        logging.error("ls: No such folder")
+        logging.error("ls: Folder does not exist")
         return
-
     if not target.is_dir():
         print("Это не папка")
-        logging.error("ls: This is not a folder")
+        logging.error("ls: Target is not a directory")
         return
 
     items = list(target.iterdir())
     if not items:
         print("Папка пуста")
-        logging.error("Empty folder")
+        logging.info("ls: Folder is empty")
         return
 
     if show_long:
@@ -39,17 +34,17 @@ def cmd_ls(args: list[str]):
     for item in items:
         if item.name.startswith('.') or item.name == 'desktop.ini':
             continue
-
         if show_long:
             try:
-                st = os.stat(item)
-                mode = stat.filemode(st.st_mode)
-                size = st.st_size
-                mtime = datetime.datetime.fromtimestamp(st.st_mtime).strftime('%Y-%m-%d %H:%M')
+                stat_info = os.stat(item)
+                mode = stat.filemode(stat_info.st_mode)
+                size = stat_info.st_size
+                mtime = datetime.datetime.fromtimestamp(stat_info.st_mtime).strftime('%Y-%m-%d %H:%M')
                 print(f"{mode} {size:>10} {mtime} {item.name}")
             except Exception as e:
                 print(f"Ошибка при доступе к {item}: {e}")
                 logging.error(f"ls: Error accessing {item}: {e}")
         else:
             print(item.name)
-    logging.info("Complete ls without errors")
+
+    logging.info(f"ls: Listed contents of {target}")

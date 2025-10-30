@@ -8,21 +8,19 @@ def cmd_tar(args):
         logging.error("TAR: Invalid number of arguments (expected 2: folder and archive name)")
         return
 
-    folder_path_str = args[1]
-    archive_path_str = args[2]
 
-    folder_path = Path(folder_path_str)
-    archive_path = Path(archive_path_str)
+    path_from = Path(args[1])
+    path_to = Path(args[2])
 
-    if not folder_path.is_dir():
-        logging.error(f"TAR: Folder not found or not a directory: '{folder_path}'")
+    if not path_from.is_dir():
+        logging.error(f"TAR: Folder not found or not a directory: '{path_from}'")
         return
 
-    logging.info(f"TAR: Archiving folder '{folder_path}' into archive '{archive_path}'")
+    logging.info(f"TAR: Archiving folder '{path_from}' into archive '{path_to}'")
     try:
-        with tarfile.open(archive_path, "w:gz") as tar:
-            tar.add(folder_path, arcname=folder_path.name)
+        with tarfile.open(path_to, "w:gz") as tar:
+            tar.add(path_from, arcname=path_from.name)
         print("Архивация завершена")
-        logging.info(f"TAR: Archive '{archive_path}' created successfully")
+        logging.info(f"TAR: Archive '{path_to}' created successfully")
     except Exception as e:
         logging.error(f"TAR: Failed to create archive: {e}")

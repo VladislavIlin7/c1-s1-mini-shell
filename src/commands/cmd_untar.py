@@ -8,18 +8,17 @@ def cmd_untar(args):
         logging.error("UNTAR: Invalid number of arguments (expected 1: archive name)")
         return
 
-    archive_path_str = args[1]
-    archive_path = Path(archive_path_str)
+    target = Path(args[1])
 
-    if not archive_path.is_file():
-        logging.error(f"UNTAR: Archive file not found: '{archive_path}'")
+    if not target.is_file():
+        logging.error(f"UNTAR: Archive file not found: '{target}'")
         return
 
-    logging.info(f"UNTAR: Extracting archive '{archive_path}' to current directory")
+    logging.info(f"UNTAR: Extracting archive '{target}' to current directory")
     try:
-        with tarfile.open(archive_path, 'r:gz') as tar:
+        with tarfile.open(target, 'r:gz') as tar:
             tar.extractall(path='.')
         print("Распаковка завершена")
-        logging.info(f"UNTAR: Archive '{archive_path}' extracted successfully")
+        logging.info(f"UNTAR: Archive '{target}' extracted successfully")
     except Exception as e:
         logging.error(f"UNTAR: Failed to extract archive: {e}")

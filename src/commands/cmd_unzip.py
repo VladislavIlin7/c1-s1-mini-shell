@@ -8,18 +8,17 @@ def cmd_unzip(args: list[str]):
         logging.error("UNZIP: Invalid number of arguments (expected 1: archive name)")
         return
 
-    archive_path_str = args[1]
-    archive_path = Path(archive_path_str)
+    target = Path(args[1])
 
-    if not archive_path.is_file():
-        logging.error(f"UNZIP: Archive file not found: '{archive_path}'")
+    if not target.is_file():
+        logging.error(f"UNZIP: Archive file not found: '{target}'")
         return
 
-    logging.info(f"UNZIP: Extracting archive '{archive_path}' to current directory")
+    logging.info(f"UNZIP: Extracting archive '{target}' to current directory")
     try:
-        with zipfile.ZipFile(archive_path, 'r') as zipf:
+        with zipfile.ZipFile(target, 'r') as zipf:
             zipf.extractall(path='.')
         print("Распаковка завершена")
-        logging.info(f"UNZIP: Archive '{archive_path}' extracted successfully")
+        logging.info(f"UNZIP: Archive '{target}' extracted successfully")
     except Exception as e:
         logging.error(f"UNZIP: Failed to extract archive: {e}")
