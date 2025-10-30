@@ -7,7 +7,7 @@ from pathlib import Path
 def cmd_mv(args: list[str]):
     if len(args) != 3:
         print("Ошибка: укажите источник и назначение")
-        logging.error("mv: Not enough arguments")
+        logging.error("mv: Incorrect number of arguments")
         return
 
     path_from = Path(args[1])
@@ -19,8 +19,8 @@ def cmd_mv(args: list[str]):
         return
 
     if not os.access(path_from, os.R_OK | os.W_OK):
-        print("Ошибка: недостаточно прав для чтения или записи источника")
-        logging.error(f"mv: Insufficient access rights to: {path_from}")
+        print("Ошибка: недостаточно прав доступа")
+        logging.error(f"mv: No permission to move: {path_from}")
         return
 
     try:
@@ -28,7 +28,7 @@ def cmd_mv(args: list[str]):
             path_to = path_to / path_from.name
         shutil.move(path_from, path_to)
         print("Перемещение выполнено")
-        logging.info(f"Complete mv {path_from} {path_to} without errors")
+        logging.info(f"mv: Moved {path_from} to {path_to}")
     except Exception as e:
         print(f"Ошибка при перемещении: {e}")
-        logging.error(f"mv: Error while moving: {e}")
+        logging.error(f"mv: Move error: {e}")

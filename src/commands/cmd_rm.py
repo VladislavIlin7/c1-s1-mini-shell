@@ -13,36 +13,36 @@ def cmd_rm(args: list[str]):
     target = Path(args[-1])
 
     if target in (Path('/').resolve(), Path('..').resolve()):
-        print("Ошибка: запрещено удалять корневую или родительскую директорию")
-        logging.error(f"rm: Attempt to delete forbidden path: {target}")
+        print("Ошибка: нельзя удалить корневую или родительскую директорию")
+        logging.error("rm: Attempt to delete protected path")
         return
 
     if not target.exists():
         print("Ошибка: указанный путь не существует")
-        logging.error(f"rm: Path does not exist: {target}")
+        logging.error("rm: Path does not exist")
         return
 
     try:
         if target.is_file():
             os.remove(target)
             print("Файл удалён")
-            logging.info(f"Complete rm {target} without errors ")
+            logging.info(f"rm: File deleted {target}")
         elif target.is_dir():
             if args[1] != '-r':
                 print("Ошибка: это каталог. Для удаления используйте флаг -r")
-                logging.error(f"rm: Tried to remove directory without -r flag: {target}")
+                logging.error("rm: Missing -r flag for directory")
                 return
-            confirm = input(f"Вы уверены, что хотите удалить каталог '{target}' со всем содержимым? (y/n): ")
+            confirm = input(f"Удалить каталог '{target}' со всем содержимым? (y/n): ")
             if confirm.lower() == 'y':
                 shutil.rmtree(target)
                 print("Каталог удалён")
-                logging.info(f"Complete rm -r {target} without errors")
+                logging.info(f"rm: Directory deleted {target}")
             else:
                 print("Удаление отменено")
                 logging.info(f"rm: Deletion cancelled for {target}")
         else:
-            print("Ошибка: неизвестный тип объекта")
-            logging.error(f"rm: Unknown object type: {target}")
+            print("Ошибка: неизвестный объект")
+            logging.error("rm: Unknown object type")
     except Exception as e:
         print(f"Ошибка при удалении: {e}")
-        logging.error(f"rm: Exception during deletion: {e}")
+        logging.error(f"rm: Deletion error: {e}")

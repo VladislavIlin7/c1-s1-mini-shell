@@ -5,7 +5,6 @@ import stat
 from pathlib import Path
 
 
-
 def cmd_ls(args: list[str]):
     show_long = '-l' in args
     current = Path.cwd()

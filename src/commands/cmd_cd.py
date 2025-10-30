@@ -3,7 +3,6 @@ import os
 import logging
 
 
-
 def cmd_cd(args: list[str]):
     if len(args) == 1:
         os.chdir(Path.home())

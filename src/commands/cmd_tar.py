@@ -5,22 +5,22 @@ from pathlib import Path
 
 def cmd_tar(args):
     if len(args) != 3:
-        logging.error("TAR: Invalid number of arguments (expected 2: folder and archive name)")
+        print("Не верное количество аргументов")
+        logging.error("TAR: Invalid argument count")
         return
 
+    folder = Path(args[1])
+    archive = Path(args[2])
 
-    path_from = Path(args[1])
-    path_to = Path(args[2])
-
-    if not path_from.is_dir():
-        logging.error(f"TAR: Folder not found or not a directory: '{path_from}'")
+    if not folder.is_dir():
+        print("Папка не найдена")
+        logging.error(f"TAR: Source directory not found: {folder}")
         return
 
-    logging.info(f"TAR: Archiving folder '{path_from}' into archive '{path_to}'")
     try:
-        with tarfile.open(path_to, "w:gz") as tar:
-            tar.add(path_from, arcname=path_from.name)
+        with tarfile.open(archive, "w:gz") as tar:
+            tar.add(folder, arcname=folder.name)
         print("Архивация завершена")
-        logging.info(f"TAR: Archive '{path_to}' created successfully")
+        logging.info(f"TAR: Archive created {archive}")
     except Exception as e:
-        logging.error(f"TAR: Failed to create archive: {e}")
+        logging.error(f"TAR: Archiving error: {e}")

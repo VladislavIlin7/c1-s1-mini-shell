@@ -5,20 +5,20 @@ from pathlib import Path
 
 def cmd_untar(args):
     if len(args) != 2:
-        logging.error("UNTAR: Invalid number of arguments (expected 1: archive name)")
+        print("Не верное количество аргументов")
+        logging.error("UNTAR: Invalid argument count")
         return
 
-    target = Path(args[1])
-
-    if not target.is_file():
-        logging.error(f"UNTAR: Archive file not found: '{target}'")
+    archive = Path(args[1])
+    if not archive.is_file():
+        print("Архив не найден")
+        logging.error(f"UNTAR: Archive not found: {archive}")
         return
 
-    logging.info(f"UNTAR: Extracting archive '{target}' to current directory")
     try:
-        with tarfile.open(target, 'r:gz') as tar:
-            tar.extractall(path='.')
+        with tarfile.open(archive, 'r:gz') as tar:
+            tar.extractall('.')
         print("Распаковка завершена")
-        logging.info(f"UNTAR: Archive '{target}' extracted successfully")
+        logging.info(f"UNTAR: Archive extracted {archive}")
     except Exception as e:
-        logging.error(f"UNTAR: Failed to extract archive: {e}")
+        logging.error(f"UNTAR: Extraction error: {e}")

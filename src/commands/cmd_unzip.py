@@ -5,20 +5,20 @@ from pathlib import Path
 
 def cmd_unzip(args: list[str]):
     if len(args) != 2:
-        logging.error("UNZIP: Invalid number of arguments (expected 1: archive name)")
+        print("Не верное количество аргументов")
+        logging.error("UNZIP: Invalid argument count")
         return
 
-    target = Path(args[1])
-
-    if not target.is_file():
-        logging.error(f"UNZIP: Archive file not found: '{target}'")
+    archive = Path(args[1])
+    if not archive.is_file():
+        print("Архив не найден")
+        logging.error(f"UNZIP: Archive not found: {archive}")
         return
 
-    logging.info(f"UNZIP: Extracting archive '{target}' to current directory")
     try:
-        with zipfile.ZipFile(target, 'r') as zipf:
-            zipf.extractall(path='.')
+        with zipfile.ZipFile(archive, 'r') as zipf:
+            zipf.extractall('.')
         print("Распаковка завершена")
-        logging.info(f"UNZIP: Archive '{target}' extracted successfully")
+        logging.info(f"UNZIP: Archive extracted {archive}")
     except Exception as e:
-        logging.error(f"UNZIP: Failed to extract archive: {e}")
+        logging.error(f"UNZIP: Extraction error: {e}")
