@@ -3,25 +3,32 @@ import tarfile
 from pathlib import Path
 
 
-def cmd_tar(args):
-    if len(args) != 3:
-        print("Ошибка: не верное количество аргументов")
-        logging.error("TAR: Invalid argument count")
-        return
+class TarCommand:
+    def __init__(self, args: list[str]):
+        self.args = args
 
-    folder = Path(args[1])
-    archive = Path(args[2])
+    def print(self) -> None:
+        print(f"{' '.join(self.args)}")
 
-    if not folder.is_dir():
-        print("Ошибка: папка не найдена")
-        logging.error(f"TAR: Source directory not found: '{folder}'")
-        return
+    def run(self):
+        if len(self.args) != 3:
+            print("Ошибка: не верное количество аргументов")
+            logging.error("TAR: Invalid argument count")
+            return
 
-    try:
-        with tarfile.open(archive, "w:gz") as tar:
-            tar.add(folder, arcname=folder.name)
-        print("Архивация завершена")
-        logging.info(f"TAR: Archive created '{archive}'")
-    except Exception as e:
-        print("Ошибка при архивации")
-        logging.error(f"TAR: Archiving error: {e}")
+        folder = Path(self.args[1])
+        archive = Path(self.args[2])
+
+        if not folder.is_dir():
+            print("Ошибка: папка не найдена")
+            logging.error(f"TAR: Source directory not found: '{folder}'")
+            return
+
+        try:
+            with tarfile.open(archive, "w:gz") as tar:
+                tar.add(folder, arcname=folder.name)
+            print("Архивация завершена")
+            logging.info(f"TAR: Archive created '{archive}'")
+        except Exception as e:
+            print("Ошибка при архивации")
+            logging.error(f"TAR: Archiving error: {e}")

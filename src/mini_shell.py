@@ -11,10 +11,10 @@ from src.commands.cmd_grep import GrepCommand
 from src.commands.cmd_ls import LsCommand
 from src.commands.cmd_mv import MvCommand
 from src.commands.cmd_rm import RmCommand
-from src.commands.cmd_tar import cmd_tar
-from src.commands.cmd_untar import cmd_untar
-from src.commands.cmd_unzip import cmd_unzip
-from src.commands.cmd_zip import cmd_zip
+from src.commands.cmd_tar import TarCommand
+from src.commands.cmd_untar import UntarCommand
+from src.commands.cmd_unzip import UnzipCommand
+from src.commands.cmd_zip import ZipCommand
 from src.history import History
 
 
@@ -58,12 +58,10 @@ class MiniShell():
                 cat_command.run()
                 cmd_history.add(cat_command)
 
-            if command == 'cp':
+            elif command == 'cp':
                 cp_command = CpCommand(parts)
                 cp_command.run()
                 cmd_history.add(cp_command)
-
-
 
             elif command == 'mv':
                 mv_command = MvCommand(parts)
@@ -80,18 +78,25 @@ class MiniShell():
                 grep_command.run()
                 cmd_history.add(grep_command)
 
-
             elif command == 'zip':
-                cmd_zip(parts)
+                zip_command = ZipCommand(parts)
+                zip_command.run()
+                cmd_history.add(zip_command)
 
             elif command == 'unzip':
-                cmd_unzip(parts)
+                unzip_command = UnzipCommand(parts)
+                unzip_command.run()
+                cmd_history.add(unzip_command)
 
             elif command == 'tar':
-                cmd_tar(parts)
+                tar_command = TarCommand(parts)
+                tar_command.run()
+                cmd_history.add(tar_command)
 
             elif command == 'untar':
-                cmd_untar(parts)
+                untar_command = UntarCommand(parts)
+                untar_command.run()
+                cmd_history.add(untar_command)
 
             elif command == 'history':
                 cmd_history.print()
