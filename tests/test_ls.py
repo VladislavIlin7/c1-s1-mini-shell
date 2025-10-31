@@ -1,42 +1,67 @@
 import io
-import os
-import tempfile
 from contextlib import redirect_stdout
 from pathlib import Path
-from src.commands.cmd_ls import cmd_ls
+from src.commands.cmd_ls import LsCommand
 
 
-def test_cmd_ls():
-    original = Path.cwd()
-    with tempfile.TemporaryDirectory() as tmpdir:
-        path = Path(tmpdir)
-        testfile = path / "file.txt"
-        testfile.write_text("data")
-        os.chdir(path)
-        buffer = io.StringIO()
-        with redirect_stdout(buffer):
-            cmd_ls(["ls"])
-        assert "file.txt" in buffer.getvalue()
-        os.chdir(original)
+def test_cmd_ls_basic():
+    test_dir = Path("test_dir")
+    test_dir.mkdir(exist_ok=True)
+    testfile = test_dir / "file.txt"
+    testfile.write_text("data")
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        LsCommand(["ls", str(test_dir)]).run()
+    output = buffer.getvalue()
+    assert "file.txt" in output
+
+
+def test_cmd_ls_current_dir():
+    testfile = Path("file.txt")
+    testfile.write_text("data")
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        LsCommand(["ls"]).run()
+    output = buffer.getvalue()
+    assert "file.txt" in output
 
 
 def test_cmd_ls_long():
-    original = Path.cwd()
-    with tempfile.TemporaryDirectory() as tmpdir:
-        path = Path(tmpdir)
-        testfile = path / "file.txt"
-        testfile.write_text("data")
-        os.chdir(path)
-        buffer = io.StringIO()
-        with redirect_stdout(buffer):
-            cmd_ls(["ls", "-l"])
-        os.chdir(original)
-        assert "file.txt" in buffer.getvalue()
-        assert "MODE" in buffer.getvalue()
-
-
-def test_cmd_ls_invalid():
+    test_dir = Path("test_dir")
+    test_dir.mkdir(exist_ok=True)
+    testfile = test_dir / "file.txt"
+    testfile.write_text("data")
     buffer = io.StringIO()
     with redirect_stdout(buffer):
-        cmd_ls(["ls", "nonexistent_path"])
-    assert "Нет такой папки" in buffer.getvalue()
+        LsCommand(["ls", "-l", str(test_dir)]).run()
+    output = buffer.getvalue()
+    assert "file.txt" in output
+    assert "MODE" in output
+
+
+def test_cmd_ls_empty_dir():
+    test_dir = Path("empty_dir")
+    test_dir.mkdir(exist_ok=True)
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        LsCommand(["ls", str(test_dir)]).run()
+    output = buffer.getvalue()
+    assert "пуста" in output or output == ""
+
+
+def test_cmd_ls_invalid_path():
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        LsCommand(["ls", "nonexistent_path"]).run()
+    output = buffer.getvalue()
+    assert "Нет такой папки" in output or "Ошибка" in output
+
+
+def test_cmd_ls_file_not_dir():
+    file_path = Path("some_file.txt")
+    file_path.write_text("data")
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        LsCommand(["ls", str(file_path)]).run()
+    output = buffer.getvalue()
+    assert "не папка" in output or "Ошибка" in output

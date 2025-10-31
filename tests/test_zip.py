@@ -1,51 +1,79 @@
 import io
 import os
-import shutil
-import tempfile
 from contextlib import redirect_stdout
 from pathlib import Path
-from src.commands.cmd_zip import cmd_zip
-from src.commands.cmd_unzip import cmd_unzip
+from src.commands.cmd_zip import ZipCommand
+from src.commands.cmd_unzip import UnzipCommand
 
 
-def test_cmd_zip():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        folder = Path(tmpdir) / "to_zip"
-        folder.mkdir()
-        (folder / "a.txt").write_text("hi")
-        archive = Path(tmpdir) / "archive.zip"
-        cmd_zip(["zip", str(folder), str(archive)])
-        assert archive.exists()
+def test_cmd_zip_basic():
+    folder = Path("to_zip")
+    folder.mkdir(exist_ok=True)
+    (folder / "a.txt").write_text("hi")
+    archive = Path("archive.zip")
+    ZipCommand(["zip", str(folder), str(archive)]).run()
+    assert archive.exists()
 
 
-def test_cmd_zip_invalid():
+def test_cmd_zip_multiple_files():
+    folder = Path("to_zip")
+    folder.mkdir(exist_ok=True)
+    (folder / "a.txt").write_text("hi")
+    (folder / "b.txt").write_text("hello")
+    archive = Path("archive.zip")
+    ZipCommand(["zip", str(folder), str(archive)]).run()
+    assert archive.exists()
+
+
+def test_cmd_zip_invalid_folder():
     buffer = io.StringIO()
     with redirect_stdout(buffer):
-        cmd_zip(["zip", "no_folder", "archive.zip"])
+        ZipCommand(["zip", "no_folder", "archive.zip"]).run()
     output = buffer.getvalue().lower()
     assert "Ошибка" in output or "не найдена" in output
 
 
-def test_cmd_unzip():
-    original = Path.cwd()
-    with tempfile.TemporaryDirectory() as tmpdir:
-        base = Path(tmpdir)
-        folder = base / "pack"
-        folder.mkdir()
-        (folder / "b.txt").write_text("hello")
-        archive = base / "pack.zip"
-        cmd_zip(["zip", str(folder), str(archive)])
-        shutil.rmtree(folder)
-        os.chdir(base)
-        cmd_unzip(["unzip", str(archive)])
-        assert (base / "pack" / "b.txt").exists()
-        os.chdir(original)
+def test_cmd_zip_not_dir():
+    file_path = Path("some_file.txt")
+    file_path.write_text("data")
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        ZipCommand(["zip", str(file_path), "archive.zip"]).run()
+    output = buffer.getvalue()
+    assert "Ошибка" in output
+
+
+def test_cmd_zip_no_args():
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        ZipCommand(["zip"]).run()
+    output = buffer.getvalue()
+    assert "Ошибка" in output
+
+
+def test_cmd_unzip_basic():
+    folder = Path("pack")
+    folder.mkdir(exist_ok=True)
+    (folder / "b.txt").write_text("hello")
+    archive = Path("pack.zip")
+    ZipCommand(["zip", str(folder), str(archive)]).run()
+    os.remove(folder / "b.txt")
+    folder.rmdir()
+    UnzipCommand(["unzip", str(archive)]).run()
+    assert (folder / "b.txt").exists()
 
 
 def test_cmd_unzip_invalid():
-    from src.commands.cmd_unzip import cmd_unzip
     buffer = io.StringIO()
     with redirect_stdout(buffer):
-        cmd_unzip(["unzip", "no_such_archive.zip"])
+        UnzipCommand(["unzip", "no_such_archive.zip"]).run()
+    output = buffer.getvalue()
+    assert "Ошибка" in output
+
+
+def test_cmd_unzip_no_args():
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        UnzipCommand(["unzip"]).run()
     output = buffer.getvalue()
     assert "Ошибка" in output

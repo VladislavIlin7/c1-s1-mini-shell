@@ -1,35 +1,70 @@
 import io
 import sys
-import tempfile
 from contextlib import redirect_stdout
 from pathlib import Path
-from src.commands.cmd_rm import cmd_rm
-
-def test_cmd_rm():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        path = Path(tmpdir)
-        f = path / "to_delete.txt"
-        f.write_text("delete me")
-        cmd_rm(["rm", str(f)])
-        assert not f.exists()
+from src.commands.cmd_rm import RmCommand
 
 
-def test_cmd_rm_recursive():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        folder = Path(tmpdir) / "dir"
-        folder.mkdir()
-        (folder / "file.txt").write_text("data")
-        buffer = io.StringIO()
-        with redirect_stdout(buffer):
-            input_backup = sys.stdin
-            sys.stdin = io.StringIO("y\n")
-            cmd_rm(["rm", "-r", str(folder)])
-            sys.stdin = input_backup
-        assert not folder.exists()
-
-
-def test_cmd_rm_invalid():
+def test_cmd_rm_file():
+    f = Path("to_delete.txt")
+    f.write_text("delete me")
     buffer = io.StringIO()
     with redirect_stdout(buffer):
-        cmd_rm(["rm", "fake.txt"])
-    assert "Ошибка" in buffer.getvalue()
+        RmCommand(["rm", str(f)]).run()
+    assert not f.exists()
+
+
+def test_cmd_rm_directory_with_r():
+    folder = Path("dir")
+    folder.mkdir(exist_ok=True)
+    (folder / "file.txt").write_text("data")
+    input_backup = sys.stdin
+    sys.stdin = io.StringIO("y\n")
+    try:
+        RmCommand(["rm", "-r", str(folder)]).run()
+    finally:
+        sys.stdin = input_backup
+    assert not folder.exists()
+
+
+def test_cmd_rm_directory_without_r():
+    folder = Path("dir")
+    folder.mkdir(exist_ok=True)
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        RmCommand(["rm", str(folder)]).run()
+    output = buffer.getvalue()
+    assert "Ошибка" in output or "-r" in output
+    assert folder.exists()
+
+
+def test_cmd_rm_no_args():
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        RmCommand(["rm"]).run()
+    output = buffer.getvalue()
+    assert "Ошибка" in output
+
+
+def test_cmd_rm_invalid_path():
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        RmCommand(["rm", "fake.txt"]).run()
+    output = buffer.getvalue()
+    assert "Ошибка" in output or "не существует" in output
+
+
+def test_cmd_rm_cancel():
+    folder = Path("dir")
+    folder.mkdir(exist_ok=True)
+    input_backup = sys.stdin
+    sys.stdin = io.StringIO("n\n")
+    try:
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            RmCommand(["rm", "-r", str(folder)]).run()
+        output = buffer.getvalue()
+        assert "отменено" in output.lower() or "отменено" in output
+    finally:
+        sys.stdin = input_backup
+    assert folder.exists()

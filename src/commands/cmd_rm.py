@@ -33,12 +33,16 @@ class RmCommand:
 
     def run(self) -> None:
 
-        target = Path(self.args[2])
-
         if len(self.args) < 2:
             print("Ошибка: укажите путь для удаления")
             logging.error("rm: No path provided")
             return
+
+        # Определяем путь: если есть -r, то путь в args[2], иначе в args[1]
+        if len(self.args) > 2 and self.args[1] == '-r':
+            target = Path(self.args[2])
+        else:
+            target = Path(self.args[1])
 
         if target in (Path('/').resolve(), Path('..').resolve()):
             print("Ошибка: нельзя удалить корневую или родительскую директорию")
@@ -54,13 +58,19 @@ class RmCommand:
             self.backup_dir.mkdir(parents=True, exist_ok=True)
             trash_path = self.backup_dir / target.name
 
+            # Если файл с таким именем уже существует в корзине, добавляем суффикс
+            counter = 1
+            while trash_path.exists():
+                trash_path = self.backup_dir / f"{target.name}_{counter}"
+                counter += 1
+
             if target.is_file():
                 shutil.move(target, trash_path)
                 print("Файл удалён")
                 logging.info(f"rm: File moved to trash '{trash_path}'")
 
             elif target.is_dir():
-                if self.args[1] != '-r':
+                if len(self.args) < 3 or self.args[1] != '-r':
                     print("Ошибка: это каталог. Для удаления используйте флаг -r")
                     logging.error("rm: Missing -r flag for directory")
                     return

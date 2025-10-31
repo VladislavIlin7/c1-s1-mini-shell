@@ -39,8 +39,8 @@ class MiniShell():
                 logging.error('Empty command')
                 continue
 
-            parts = cmd_input.split()
-            command = parts[0]
+            parts: list[str] = cmd_input.split()
+            command: str = parts[0]
             logging.info(cmd_input)
 
             if command == 'ls':
@@ -99,7 +99,10 @@ class MiniShell():
                 cmd_history.add(untar_command)
 
             elif command == 'history':
-                cmd_history.print()
+                if len(parts) == 2:
+                    cmd_history.print(int(parts[1]))
+                else:
+                    cmd_history.print(0)
 
             elif command == 'undo':
                 cmd_history.undo()

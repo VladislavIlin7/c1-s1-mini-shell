@@ -1,49 +1,79 @@
 import io
 import os
-import shutil
-import tempfile
 from contextlib import redirect_stdout
 from pathlib import Path
-from src.commands.cmd_tar import cmd_tar
-from src.commands.cmd_untar import cmd_untar
+from src.commands.cmd_tar import TarCommand
+from src.commands.cmd_untar import UntarCommand
 
 
-def test_cmd_tar():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        folder = Path(tmpdir) / "dir"
-        folder.mkdir()
-        (folder / "x.txt").write_text("test")
-        archive = Path(tmpdir) / "dir.tar.gz"
-        cmd_tar(["tar", str(folder), str(archive)])
-        assert archive.exists()
+def test_cmd_tar_basic():
+    folder = Path("dir")
+    folder.mkdir(exist_ok=True)
+    (folder / "x.txt").write_text("test")
+    archive = Path("dir.tar.gz")
+    TarCommand(["tar", str(folder), str(archive)]).run()
+    assert archive.exists()
 
 
-def test_cmd_untar():
-    original = Path.cwd()
-    with tempfile.TemporaryDirectory() as tmpdir:
-        folder = Path(tmpdir) / "z"
-        folder.mkdir()
-        (folder / "y.txt").write_text("abc")
-        archive = Path(tmpdir) / "z.tar.gz"
-        cmd_tar(["tar", str(folder), str(archive)])
-        shutil.rmtree(folder)
-        os.chdir(tmpdir)
-        cmd_untar(["untar", str(archive)])
-        assert (Path(tmpdir) / "z" / "y.txt").exists()
-        os.chdir(original)
+def test_cmd_tar_multiple_files():
+    folder = Path("dir")
+    folder.mkdir(exist_ok=True)
+    (folder / "x.txt").write_text("test")
+    (folder / "y.txt").write_text("data")
+    archive = Path("dir.tar.gz")
+    TarCommand(["tar", str(folder), str(archive)]).run()
+    assert archive.exists()
+
+
+def test_cmd_tar_invalid_folder():
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        TarCommand(["tar", "no_folder", "output.tar.gz"]).run()
+    output = buffer.getvalue()
+    assert "Ошибка" in output
+
+
+def test_cmd_tar_not_dir():
+    file_path = Path("some_file.txt")
+    file_path.write_text("data")
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        TarCommand(["tar", str(file_path), "output.tar.gz"]).run()
+    output = buffer.getvalue()
+    assert "Ошибка" in output
+
+
+def test_cmd_tar_no_args():
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        TarCommand(["tar"]).run()
+    output = buffer.getvalue()
+    assert "Ошибка" in output
+
+
+def test_cmd_untar_basic():
+    folder = Path("z")
+    folder.mkdir(exist_ok=True)
+    (folder / "y.txt").write_text("abc")
+    archive = Path("z.tar.gz")
+    TarCommand(["tar", str(folder), str(archive)]).run()
+    os.remove(folder / "y.txt")
+    folder.rmdir()
+    UntarCommand(["untar", str(archive)]).run()
+    assert (folder / "y.txt").exists()
 
 
 def test_cmd_untar_invalid():
     buffer = io.StringIO()
     with redirect_stdout(buffer):
-        cmd_untar(["untar", "bad_archive.tar.gz"])
+        UntarCommand(["untar", "bad_archive.tar.gz"]).run()
     output = buffer.getvalue()
     assert "Ошибка" in output or "error" in output.lower()
 
 
-def test_cmd_tar_invalid():
+def test_cmd_untar_no_args():
     buffer = io.StringIO()
     with redirect_stdout(buffer):
-        cmd_tar(["tar", "no_folder", "output.tar.gz"])
+        UntarCommand(["untar"]).run()
     output = buffer.getvalue()
     assert "Ошибка" in output

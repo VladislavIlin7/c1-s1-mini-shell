@@ -17,7 +17,9 @@ class History:
         cmd = self.history.pop()
         cmd.undo()
 
-    def print(self) -> None:
+    def print(self, count: int) -> None:
         print("Последние команды:")
-        for i, command in enumerate(self.history[-self.max_commands:], start=1):
+        if count == 0:
+            count = self.max_commands
+        for i, command in enumerate(self.history[-count:], start=1):
             print(f"{i}: {' '.join(command.args)}")
