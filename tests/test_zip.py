@@ -1,5 +1,6 @@
 import io
 import os
+import tempfile
 from contextlib import redirect_stdout
 from pathlib import Path
 from src.commands.cmd_zip import ZipCommand
@@ -7,22 +8,24 @@ from src.commands.cmd_unzip import UnzipCommand
 
 
 def test_cmd_zip_basic():
-    folder = Path("to_zip")
-    folder.mkdir(exist_ok=True)
-    (folder / "a.txt").write_text("hi")
-    archive = Path("archive.zip")
-    ZipCommand(["zip", str(folder), str(archive)]).run()
-    assert archive.exists()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        folder = Path(tmpdir) / "to_zip"
+        folder.mkdir(exist_ok=True)
+        (folder / "a.txt").write_text("hi")
+        archive = Path(tmpdir) / "archive.zip"
+        ZipCommand(["zip", str(folder), str(archive)]).run()
+        assert archive.exists()
 
 
 def test_cmd_zip_multiple_files():
-    folder = Path("to_zip")
-    folder.mkdir(exist_ok=True)
-    (folder / "a.txt").write_text("hi")
-    (folder / "b.txt").write_text("hello")
-    archive = Path("archive.zip")
-    ZipCommand(["zip", str(folder), str(archive)]).run()
-    assert archive.exists()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        folder = Path(tmpdir) / "to_zip"
+        folder.mkdir(exist_ok=True)
+        (folder / "a.txt").write_text("hi")
+        (folder / "b.txt").write_text("hello")
+        archive = Path(tmpdir) / "archive.zip"
+        ZipCommand(["zip", str(folder), str(archive)]).run()
+        assert archive.exists()
 
 
 def test_cmd_zip_invalid_folder():
@@ -34,13 +37,14 @@ def test_cmd_zip_invalid_folder():
 
 
 def test_cmd_zip_not_dir():
-    file_path = Path("some_file.txt")
-    file_path.write_text("data")
-    buffer = io.StringIO()
-    with redirect_stdout(buffer):
-        ZipCommand(["zip", str(file_path), "archive.zip"]).run()
-    output = buffer.getvalue()
-    assert "Ошибка" in output
+    with tempfile.TemporaryDirectory() as tmpdir:
+        file_path = Path(tmpdir) / "some_file.txt"
+        file_path.write_text("data")
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            ZipCommand(["zip", str(file_path), str(Path(tmpdir) / "archive.zip")]).run()
+        output = buffer.getvalue()
+        assert "Ошибка" in output
 
 
 def test_cmd_zip_no_args():
@@ -52,15 +56,19 @@ def test_cmd_zip_no_args():
 
 
 def test_cmd_unzip_basic():
-    folder = Path("pack")
-    folder.mkdir(exist_ok=True)
-    (folder / "b.txt").write_text("hello")
-    archive = Path("pack.zip")
-    ZipCommand(["zip", str(folder), str(archive)]).run()
-    os.remove(folder / "b.txt")
-    folder.rmdir()
-    UnzipCommand(["unzip", str(archive)]).run()
-    assert (folder / "b.txt").exists()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        folder = Path(tmpdir) / "pack"
+        folder.mkdir(exist_ok=True)
+        (folder / "b.txt").write_text("hello")
+        archive = Path(tmpdir) / "pack.zip"
+        ZipCommand(["zip", str(folder), str(archive)]).run()
+        original_cwd = Path.cwd()
+        try:
+            os.chdir(tmpdir)
+            UnzipCommand(["unzip", str(archive)]).run()
+            assert (Path(tmpdir) / "pack" / "b.txt").exists()
+        finally:
+            os.chdir(original_cwd)
 
 
 def test_cmd_unzip_invalid():
