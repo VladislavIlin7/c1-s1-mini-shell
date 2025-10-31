@@ -2,7 +2,7 @@ import io
 import tempfile
 from contextlib import redirect_stdout
 from pathlib import Path
-from src.commands.cmd_cat import CatCommand
+from src.commands.cat_command import CatCommand
 
 
 def test_cmd_cat_basic():

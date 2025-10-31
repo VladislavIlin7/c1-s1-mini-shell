@@ -16,7 +16,12 @@ class RmCommand:
 
     def undo(self) -> None:
 
-        path = Path(self.args[2])
+        if len(self.args) < 2:
+            print("Ошибка: укажите путь для удаления")
+            logging.error("rm: No path provided")
+            return
+
+        path = Path(self.args[-1])
         trash_path = self.backup_dir / path.name
 
         if trash_path.exists():
@@ -38,7 +43,6 @@ class RmCommand:
             logging.error("rm: No path provided")
             return
 
-        # Определяем путь: если есть -r, то путь в args[2], иначе в args[1]
         if len(self.args) > 2 and self.args[1] == '-r':
             target = Path(self.args[2])
         else:
@@ -58,7 +62,6 @@ class RmCommand:
             self.backup_dir.mkdir(parents=True, exist_ok=True)
             trash_path = self.backup_dir / target.name
 
-            # Если файл с таким именем уже существует в корзине, добавляем суффикс
             counter = 1
             while trash_path.exists():
                 trash_path = self.backup_dir / f"{target.name}_{counter}"
@@ -66,7 +69,7 @@ class RmCommand:
 
             if target.is_file():
                 shutil.move(target, trash_path)
-                print("Файл удалён")
+                print(f"Файл удалён '{target}'")
                 logging.info(f"rm: File moved to trash '{trash_path}'")
 
             elif target.is_dir():
@@ -78,7 +81,7 @@ class RmCommand:
                 confirm = input(f"Удалить каталог '{target}' со всем содержимым? (y/n): ")
                 if confirm == 'y':
                     shutil.move(target, trash_path)
-                    print("Каталог удалён")
+                    print(f"Каталог '{target}' удалён")
                     logging.info(f"rm: Directory moved to trash '{trash_path}'")
                 else:
                     print("Удаление отменено")

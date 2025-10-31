@@ -8,9 +8,14 @@ class ZipCommand:
         self.args = args
 
     def print(self) -> None:
+
         print(f"{' '.join(self.args)}")
 
-    def run(self):
+    def undo(self) -> None:
+        return
+
+    def run(self) -> None:
+
         if len(self.args) != 3:
             print("Ошибка: неверное количество аргументов")
             logging.error("ZIP: Invalid argument count")
@@ -20,7 +25,7 @@ class ZipCommand:
         path_to = Path(self.args[2])
 
         if not path_from.is_dir():
-            print("Ошибка: папка не найдена")
+            print(f"Ошибка: папка не найдена '{path_from}'")
             logging.error(f"ZIP: Source directory not found: '{path_from}'")
             return
 

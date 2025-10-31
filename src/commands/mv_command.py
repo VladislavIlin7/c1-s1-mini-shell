@@ -9,9 +9,11 @@ class MvCommand:
         self.args = args
 
     def print(self) -> None:
+
         print(f"{' '.join(self.args)}")
 
     def undo(self) -> None:
+
         if len(self.args) != 3:
             print("Ошибка: укажите источник и назначение")
             logging.error("mv: Incorrect number of arguments")

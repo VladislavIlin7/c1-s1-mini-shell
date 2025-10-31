@@ -2,7 +2,7 @@ import io
 import tempfile
 from contextlib import redirect_stdout
 from pathlib import Path
-from src.commands.cmd_cp import CpCommand
+from src.commands.cp_command import CpCommand
 
 
 def test_cmd_cp_file():

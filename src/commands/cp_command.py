@@ -9,6 +9,7 @@ class CpCommand:
         self.args = args
 
     def print(self) -> None:
+
         print(f"{' '.join(self.args)}")
 
     def undo(self) -> None:
@@ -18,12 +19,12 @@ class CpCommand:
         if path.is_file():
             os.remove(path)
             print(f"Файл удалён '{path}'")
-            logging.info("Complete")
+            logging.info(f"undo: copy deleted '{path}'")
             return
         elif path.is_dir():
             shutil.rmtree(path)
             print(f"Папка удалена '{path}'")
-            logging.info("Complete")
+            logging.info(f"undo: copy deleted '{path}'")
         print("Ошибка удаления: файл не найден")
         logging.error("error")
 
@@ -38,7 +39,7 @@ class CpCommand:
         path_to = Path(self.args[-1])
 
         if not path_from.exists():
-            print("Ошибка: исходный файл не существует")
+            print(f"Ошибка: исходный файл не существует '{path_from}'")
             logging.error(f"cp: Source does not exist: '{path_from}'")
             return
 

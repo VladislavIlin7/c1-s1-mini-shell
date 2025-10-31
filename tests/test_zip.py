@@ -3,8 +3,8 @@ import os
 import tempfile
 from contextlib import redirect_stdout
 from pathlib import Path
-from src.commands.cmd_zip import ZipCommand
-from src.commands.cmd_unzip import UnzipCommand
+from src.commands.zip_command import ZipCommand
+from src.commands.unzip_command import UnzipCommand
 
 
 def test_cmd_zip_basic():

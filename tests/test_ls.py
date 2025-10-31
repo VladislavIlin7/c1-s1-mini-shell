@@ -2,7 +2,7 @@ import io
 import tempfile
 from contextlib import redirect_stdout
 from pathlib import Path
-from src.commands.cmd_ls import LsCommand
+from src.commands.ls_command import LsCommand
 
 
 def test_cmd_ls_basic():

@@ -8,9 +8,14 @@ class CdCommand:
         self.args = args
 
     def print(self) -> None:
+
         print(f"{' '.join(self.args)}")
 
-    def run(self):
+    def undo(self) -> None:
+        return
+
+    def run(self) -> None:
+
         if len(self.args) == 1:
             os.chdir(Path.home())
             logging.info("cd: Changed to home directory")
@@ -18,7 +23,7 @@ class CdCommand:
 
         target = Path(self.args[1]).expanduser()
         if not target.exists():
-            print("Ошибка: такой папки не существует")
+            print(f"Ошибка: такой папки не существует '{target}'")
             logging.error(f"cd: Directory does not exist: '{target}'")
             return
         if not target.is_dir():

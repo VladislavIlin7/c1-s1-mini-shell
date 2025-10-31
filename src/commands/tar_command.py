@@ -10,7 +10,10 @@ class TarCommand:
     def print(self) -> None:
         print(f"{' '.join(self.args)}")
 
-    def run(self):
+    def undo(self) -> None:
+        return
+
+    def run(self) -> None:
         if len(self.args) != 3:
             print("Ошибка: не верное количество аргументов")
             logging.error("TAR: Invalid argument count")
@@ -20,7 +23,7 @@ class TarCommand:
         archive = Path(self.args[2])
 
         if not folder.is_dir():
-            print("Ошибка: папка не найдена")
+            print(f"Ошибка: папка не найдена '{folder}'")
             logging.error(f"TAR: Source directory not found: '{folder}'")
             return
 

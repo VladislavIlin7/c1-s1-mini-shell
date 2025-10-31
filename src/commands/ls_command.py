@@ -12,24 +12,27 @@ class LsCommand:
     def print(self) -> None:
         print(f"{' '.join(self.args)}")
 
-    def run(self):
+    def undo(self) -> None:
+        return
+
+    def run(self) -> None:
         show_long = '-l' in self.args
         current = Path.cwd()
         target = Path(self.args[1]) if len(self.args) > 1 and not self.args[1] == '-l' else current
 
         if not target.exists():
-            print("Нет такой папки")
-            logging.error("ls: Folder does not exist")
+            print(f"Нет такой папки '{target}'")
+            logging.error(f"ls: Folder does not exist '{target}'")
             return
         if not target.is_dir():
-            print("Это не папка")
-            logging.error("ls: Target is not a directory")
+            print(f"Это не папка '{target}'")
+            logging.error(f"ls: Target is not a directory '{target}'")
             return
 
         items = list(target.iterdir())
         if not items:
             print("Папка пуста")
-            logging.info("ls: Folder is empty")
+            logging.info(f"ls: Folder is empty '{target}'")
             return
 
         if show_long:

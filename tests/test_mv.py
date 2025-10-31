@@ -1,6 +1,6 @@
 import tempfile
 from pathlib import Path
-from src.commands.cmd_mv import MvCommand
+from src.commands.mv_command import MvCommand
 
 
 def test_cmd_mv_file():

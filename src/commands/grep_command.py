@@ -10,7 +10,10 @@ class GrepCommand:
     def print(self) -> None:
         print(f"{' '.join(self.args)}")
 
-    def run(self):
+    def undo(self) -> None:
+        return
+
+    def run(self) -> None:
         if len(self.args) < 3:
             print("Ошибка: недостаточно аргументов. Использование: grep [-r] [-i] <шаблон> <путь>")
             logging.error("GREP: Invalid number of arguments")
@@ -30,7 +33,7 @@ class GrepCommand:
         path = Path(filtered_args[2])
 
         if not path.exists():
-            print("Ошибка: указанный путь не существует")
+            print(f"Ошибка: указанный путь не существует '{path}'")
             logging.error(f"GREP: Path does not exist: '{path}'")
             return
 
@@ -48,7 +51,7 @@ class GrepCommand:
             files = list(path.rglob('*') if recursive else path.glob('*'))
             files = [f for f in files if f.is_file()]
         else:
-            print("Ошибка: путь не является файлом или директорией")
+            print(f"Ошибка: '{path}' не является файлом или директорией")
             logging.error(f"GREP: Invalid path type: '{path}'")
             return
 

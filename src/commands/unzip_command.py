@@ -10,7 +10,10 @@ class UnzipCommand:
     def print(self) -> None:
         print(f"{' '.join(self.args)}")
 
-    def run(self):
+    def undo(self) -> None:
+        return
+
+    def run(self) -> None:
         if len(self.args) != 2:
             print("Ошибка: не верное количество аргументов")
             logging.error("UNZIP: Invalid argument count")
@@ -18,7 +21,7 @@ class UnzipCommand:
 
         archive = Path(self.args[1])
         if not archive.is_file():
-            print("Ошибка: архив не найден")
+            print(f"Ошибка: архив не найден '{archive}'")
             logging.error(f"UNZIP: Archive not found: '{archive}'")
             return
 

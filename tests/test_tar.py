@@ -3,8 +3,8 @@ import os
 import tempfile
 from contextlib import redirect_stdout
 from pathlib import Path
-from src.commands.cmd_tar import TarCommand
-from src.commands.cmd_untar import UntarCommand
+from src.commands.tar_command import TarCommand
+from src.commands.untar_command import UntarCommand
 
 
 def test_cmd_tar_basic():

@@ -7,9 +7,13 @@ class CatCommand:
         self.args = args
 
     def print(self) -> None:
+
         print(f"{' '.join(self.args)}")
 
-    def run(self):
+    def undo(self) -> None:
+        return
+
+    def run(self) -> None:
 
         if len(self.args) < 2:
             print("Укажите путь к файлу")
@@ -18,7 +22,7 @@ class CatCommand:
 
         target = Path(self.args[1])
         if target.is_dir():
-            print("Ошибка: указан каталог, а не файл")
+            print(f"Ошибка: указан каталог '{target}', а не файл")
             logging.error(f"cat: Target is a directory: '{target}'")
             return
 

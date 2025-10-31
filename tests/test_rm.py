@@ -3,7 +3,7 @@ import sys
 import tempfile
 from contextlib import redirect_stdout
 from pathlib import Path
-from src.commands.cmd_rm import RmCommand
+from src.commands.rm_command import RmCommand
 
 
 def test_cmd_rm_file():

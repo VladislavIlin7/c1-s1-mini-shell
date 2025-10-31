@@ -3,18 +3,18 @@ import sys
 from pathlib import Path
 import logging
 
-from src.commands.cmd_cat import CatCommand
-from src.commands.cmd_cd import CdCommand
-from src.commands.cmd_cp import CpCommand
-from src.commands.cmd_grep import GrepCommand
+from src.commands.cat_command import CatCommand
+from src.commands.cd_command import CdCommand
+from src.commands.cp_command import CpCommand
+from src.commands.grep_command import GrepCommand
 
-from src.commands.cmd_ls import LsCommand
-from src.commands.cmd_mv import MvCommand
-from src.commands.cmd_rm import RmCommand
-from src.commands.cmd_tar import TarCommand
-from src.commands.cmd_untar import UntarCommand
-from src.commands.cmd_unzip import UnzipCommand
-from src.commands.cmd_zip import ZipCommand
+from src.commands.ls_command import LsCommand
+from src.commands.mv_command import MvCommand
+from src.commands.rm_command import RmCommand
+from src.commands.tar_command import TarCommand
+from src.commands.untar_command import UntarCommand
+from src.commands.unzip_command import UnzipCommand
+from src.commands.zip_command import ZipCommand
 from src.history import History
 
 
@@ -105,6 +105,7 @@ class MiniShell():
                     cmd_history.print(0)
 
             elif command == 'undo':
+
                 cmd_history.undo()
 
             elif command in ('exit', 'q'):

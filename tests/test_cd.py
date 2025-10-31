@@ -1,7 +1,7 @@
 import os
 import tempfile
 from pathlib import Path
-from src.commands.cmd_cd import CdCommand
+from src.commands.cd_command import CdCommand
 
 
 def test_cmd_cd_basic():

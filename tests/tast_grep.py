@@ -2,7 +2,7 @@ import io
 import tempfile
 from contextlib import redirect_stdout
 from pathlib import Path
-from src.commands.cmd_grep import GrepCommand
+from src.commands.grep_command import GrepCommand
 
 
 def test_cmd_grep_basic():
