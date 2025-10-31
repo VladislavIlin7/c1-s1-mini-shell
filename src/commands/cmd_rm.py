@@ -26,7 +26,7 @@ def cmd_rm(args: list[str]):
         if target.is_file():
             os.remove(target)
             print("Файл удалён")
-            logging.info(f"rm: File deleted {target}")
+            logging.info(f"rm: File deleted '{target}'")
         elif target.is_dir():
             if args[1] != '-r':
                 print("Ошибка: это каталог. Для удаления используйте флаг -r")
@@ -36,10 +36,10 @@ def cmd_rm(args: list[str]):
             if confirm.lower() == 'y':
                 shutil.rmtree(target)
                 print("Каталог удалён")
-                logging.info(f"rm: Directory deleted {target}")
+                logging.info(f"rm: Directory deleted '{target}'")
             else:
                 print("Удаление отменено")
-                logging.info(f"rm: Deletion cancelled for {target}")
+                logging.info(f"rm: Deletion cancelled for '{target}'")
         else:
             print("Ошибка: неизвестный объект")
             logging.error("rm: Unknown object type")

@@ -12,13 +12,13 @@ def cmd_untar(args):
     archive = Path(args[1])
     if not archive.is_file():
         print("Архив не найден")
-        logging.error(f"UNTAR: Archive not found: {archive}")
+        logging.error(f"UNTAR: Archive not found: '{archive}'")
         return
 
     try:
         with tarfile.open(archive, 'r:gz') as tar:
             tar.extractall('.')
         print("Распаковка завершена")
-        logging.info(f"UNTAR: Archive extracted {archive}")
+        logging.info(f"UNTAR: Archive extracted '{archive}'")
     except Exception as e:
         logging.error(f"UNTAR: Extraction error: {e}")

@@ -6,6 +6,7 @@ import logging
 from src.commands.cmd_cat import cmd_cat
 from src.commands.cmd_cd import cmd_cd
 from src.commands.cmd_cp import cmd_cp
+from src.commands.cmd_grep import cmd_grep
 from src.commands.cmd_ls import cmd_ls
 from src.commands.cmd_mv import cmd_mv
 from src.commands.cmd_rm import cmd_rm
@@ -15,7 +16,7 @@ from src.commands.cmd_unzip import cmd_unzip
 from src.commands.cmd_zip import cmd_zip
 
 
-class MiniShell():
+class MiniShellClass():
 
     def run(self):
         start_path = Path.cwd()
@@ -57,6 +58,10 @@ class MiniShell():
                 cmd_tar(parts)
             elif command == 'untar':
                 cmd_untar(parts)
+            elif command == 'grap':
+                cmd_grep(parts)
+
+
             elif command in ('exit', 'q'):
                 break
             else:

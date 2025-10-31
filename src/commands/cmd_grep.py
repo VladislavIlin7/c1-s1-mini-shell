@@ -5,22 +5,22 @@ from pathlib import Path
 
 def cmd_grep(args: list[str]):
     if len(args) < 3:
-        print("Ошибка: недостаточно аргументов")
+        print("Ошибка: недостаточно аргументов. Использование: grep [-r] [-i] <шаблон> <путь>")
         logging.error("GREP: Invalid number of arguments")
         return
 
     recursive = '-r' in args
     ignore_case = '-i' in args
 
-    args = [arg for arg in args if arg not in ('-r', '-i')]
+    filtered_args = [arg for arg in args if arg not in ('-r', '-i')]
 
-    if len(args) < 3:
+    if len(filtered_args) < 3 - (recursive + ignore_case):
         print("Ошибка: отсутствует шаблон или путь")
         logging.error("GREP: Missing pattern or path")
         return
 
-    pattern = args[-2]
-    path = Path(args[-1])
+    pattern = filtered_args[1]
+    path = Path(filtered_args[2])
 
     if not path.exists():
         print("Ошибка: указанный путь не существует")
@@ -28,9 +28,9 @@ def cmd_grep(args: list[str]):
         return
 
     try:
-        regex_flags = re.IGNORECASE if ignore_case else 0
-        regex = re.compile(pattern, regex_flags)
-    except Exception as e:
+        flags = re.IGNORECASE if ignore_case else 0
+        regex = re.compile(pattern, flags)
+    except re.error as e:
         print("Ошибка: неверное регулярное выражение")
         logging.error(f"GREP: Invalid regex pattern: {e}")
         return

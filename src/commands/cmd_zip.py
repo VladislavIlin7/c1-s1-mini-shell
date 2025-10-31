@@ -14,7 +14,7 @@ def cmd_zip(args: list[str]):
 
     if not path_from.is_dir():
         print("Папка не найдена")
-        logging.error(f"ZIP: Source directory not found: {path_from}")
+        logging.error(f"ZIP: Source directory not found: '{path_from}'")
         return
 
     try:
@@ -24,6 +24,6 @@ def cmd_zip(args: list[str]):
                     arcname = file_path.relative_to(path_from.parent).as_posix()
                     zipf.write(file_path, arcname=arcname)
         print("Архивация успешна")
-        logging.info(f"ZIP: Archive created {path_to}")
+        logging.info(f"ZIP: Archive created '{path_to}'")
     except Exception as e:
         logging.error(f"ZIP: Archiving error: {e}")

@@ -46,4 +46,4 @@ def cmd_ls(args: list[str]):
         else:
             print(item.name)
 
-    logging.info(f"ls: Listed contents of {target}")
+    logging.info(f"ls: Listed contents of '{target}'")

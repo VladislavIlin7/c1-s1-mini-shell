@@ -12,12 +12,12 @@ def cmd_cd(args: list[str]):
     target = Path(args[1]).expanduser()
     if not target.exists():
         print("Ошибка: такой папки не существует")
-        logging.error(f"cd: Directory does not exist: {target}")
+        logging.error(f"cd: Directory does not exist: '{target}'")
         return
     if not target.is_dir():
         print("Ошибка: это не папка")
-        logging.error(f"cd: Not a directory: {target}")
+        logging.error(f"cd: Not a directory: '{target}'")
         return
 
     os.chdir(target)
-    logging.info(f"cd: Changed directory to {target}")
+    logging.info(f"cd: Changed directory to '{target}'")

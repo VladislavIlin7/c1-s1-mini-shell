@@ -14,13 +14,13 @@ def cmd_tar(args):
 
     if not folder.is_dir():
         print("Папка не найдена")
-        logging.error(f"TAR: Source directory not found: {folder}")
+        logging.error(f"TAR: Source directory not found: '{folder}'")
         return
 
     try:
         with tarfile.open(archive, "w:gz") as tar:
             tar.add(folder, arcname=folder.name)
         print("Архивация завершена")
-        logging.info(f"TAR: Archive created {archive}")
+        logging.info(f"TAR: Archive created '{archive}'")
     except Exception as e:
         logging.error(f"TAR: Archiving error: {e}")

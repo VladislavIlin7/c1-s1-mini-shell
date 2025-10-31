@@ -11,13 +11,13 @@ def cmd_cat(args: list[str]):
     target = Path(args[1])
     if target.is_dir():
         print("Ошибка: указан каталог, а не файл")
-        logging.error(f"cat: Target is a directory: {target}")
+        logging.error(f"cat: Target is a directory: '{target}'")
         return
 
     try:
         with open(target, 'r', encoding='utf-8') as f:
             print(f.read())
-            logging.info(f"cat: Read file {target}")
+            logging.info(f"cat: Read file '{target}'")
     except Exception as e:
         print(f"Ошибка при чтении файла: {e}")
-        logging.error(f"cat: Error reading {target}: {e}")
+        logging.error(f"cat: Error reading '{target}': {e}")
