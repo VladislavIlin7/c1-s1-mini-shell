@@ -5,13 +5,13 @@ from pathlib import Path
 
 def cmd_untar(args):
     if len(args) != 2:
-        print("Не верное количество аргументов")
+        print("Ошибка: не верное количество аргументов")
         logging.error("UNTAR: Invalid argument count")
         return
 
     archive = Path(args[1])
     if not archive.is_file():
-        print("Архив не найден")
+        print("Ошибка: архив не найден")
         logging.error(f"UNTAR: Archive not found: '{archive}'")
         return
 
@@ -21,4 +21,5 @@ def cmd_untar(args):
         print("Распаковка завершена")
         logging.info(f"UNTAR: Archive extracted '{archive}'")
     except Exception as e:
+        print("Ошибка при распаковки")
         logging.error(f"UNTAR: Extraction error: {e}")

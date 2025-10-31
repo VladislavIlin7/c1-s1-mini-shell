@@ -5,7 +5,7 @@ from pathlib import Path
 
 def cmd_zip(args: list[str]):
     if len(args) != 3:
-        print("Неверное количество аргументов")
+        print("Ошибка: неверное количество аргументов")
         logging.error("ZIP: Invalid argument count")
         return
 
@@ -13,7 +13,7 @@ def cmd_zip(args: list[str]):
     path_to = Path(args[2])
 
     if not path_from.is_dir():
-        print("Папка не найдена")
+        print("Ошибка: папка не найдена")
         logging.error(f"ZIP: Source directory not found: '{path_from}'")
         return
 
@@ -26,4 +26,5 @@ def cmd_zip(args: list[str]):
         print("Архивация успешна")
         logging.info(f"ZIP: Archive created '{path_to}'")
     except Exception as e:
+        print("Ошибка при архивации")
         logging.error(f"ZIP: Archiving error: {e}")

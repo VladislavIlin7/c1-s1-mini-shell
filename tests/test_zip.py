@@ -7,6 +7,7 @@ from pathlib import Path
 from src.commands.cmd_zip import cmd_zip
 from src.commands.cmd_unzip import cmd_unzip
 
+
 def test_cmd_zip():
     with tempfile.TemporaryDirectory() as tmpdir:
         folder = Path(tmpdir) / "to_zip"
@@ -22,7 +23,8 @@ def test_cmd_zip_invalid():
     with redirect_stdout(buffer):
         cmd_zip(["zip", "no_folder", "archive.zip"])
     output = buffer.getvalue().lower()
-    assert "ошибка" in output or "error" in output or "не найдена" in output
+    assert "Ошибка" in output or "не найдена" in output
+
 
 def test_cmd_unzip():
     original = Path.cwd()
@@ -38,3 +40,12 @@ def test_cmd_unzip():
         cmd_unzip(["unzip", str(archive)])
         assert (base / "pack" / "b.txt").exists()
         os.chdir(original)
+
+
+def test_cmd_unzip_invalid():
+    from src.commands.cmd_unzip import cmd_unzip
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        cmd_unzip(["unzip", "no_such_archive.zip"])
+    output = buffer.getvalue()
+    assert "Ошибка" in output

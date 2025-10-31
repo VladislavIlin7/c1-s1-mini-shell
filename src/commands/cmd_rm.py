@@ -33,7 +33,7 @@ def cmd_rm(args: list[str]):
                 logging.error("rm: Missing -r flag for directory")
                 return
             confirm = input(f"Удалить каталог '{target}' со всем содержимым? (y/n): ")
-            if confirm.lower() == 'y':
+            if confirm == 'y':
                 shutil.rmtree(target)
                 print("Каталог удалён")
                 logging.info(f"rm: Directory deleted '{target}'")

@@ -1,4 +1,6 @@
+import io
 import tempfile
+from contextlib import redirect_stdout
 from pathlib import Path
 from src.commands.cmd_mv import cmd_mv
 
@@ -12,3 +14,11 @@ def test_cmd_mv():
         cmd_mv(["mv", str(src), str(dst)])
         assert dst.exists()
         assert not src.exists()
+
+
+def test_cmd_mv_invalid():
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        cmd_mv(["mv", "nonexistent.txt", "dest.txt"])
+    output = buffer.getvalue()
+    assert "Ошибка" in output

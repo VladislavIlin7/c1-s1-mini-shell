@@ -1,6 +1,6 @@
 import logging
 
-from src.shell import MiniShellClass
+from src.mini_shell import MiniShell
 
 logging.basicConfig(
     filename="shell.log",
@@ -11,7 +11,7 @@ logging.basicConfig(
 
 
 def main():
-    MiniShellClass().run()
+    MiniShell().run()
 
 
 if __name__ == "__main__":

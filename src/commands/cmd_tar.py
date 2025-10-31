@@ -5,7 +5,7 @@ from pathlib import Path
 
 def cmd_tar(args):
     if len(args) != 3:
-        print("Не верное количество аргументов")
+        print("Ошибка: не верное количество аргументов")
         logging.error("TAR: Invalid argument count")
         return
 
@@ -13,7 +13,7 @@ def cmd_tar(args):
     archive = Path(args[2])
 
     if not folder.is_dir():
-        print("Папка не найдена")
+        print("Ошибка: папка не найдена")
         logging.error(f"TAR: Source directory not found: '{folder}'")
         return
 
@@ -23,4 +23,5 @@ def cmd_tar(args):
         print("Архивация завершена")
         logging.info(f"TAR: Archive created '{archive}'")
     except Exception as e:
+        print("Ошибка при архивации")
         logging.error(f"TAR: Archiving error: {e}")
