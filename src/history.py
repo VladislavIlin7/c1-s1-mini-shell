@@ -1,22 +1,23 @@
 import logging
 
-
 class History:
     def __init__(self):
         self.history: list[object] = []
+        self.max_commands = 10
 
     def add(self, command: object) -> None:
         self.history.append(command)
+        logging.info(f"history: command added '{' '.join(command.args)}'")
 
     def undo(self) -> None:
         if len(self.history) == 0:
-            print("Ошибка")
-            logging.error("")
+            logging.info("undo: History is empty")
             return
 
-        commmand = self.history.pop()
-        commmand.undo()
+        cmd = self.history.pop()
+        cmd.undo()
 
     def print(self) -> None:
-        for command in self.history:
-            command.print()
+        print("Последние команды:")
+        for i, command in enumerate(self.history[-self.max_commands:], start=1):
+            print(f"{i}: {' '.join(command.args)}")

@@ -3,11 +3,18 @@ import sys
 from pathlib import Path
 import logging
 
-from src.commands.cmd_cat import cmd_cat
-from src.commands.cmd_cd import cmd_cd
+from src.commands.cmd_cat import CatCommand
+from src.commands.cmd_cd import CdCommand
 from src.commands.cmd_cp import CpCommand
-from src.commands.cmd_ls import cmd_ls
+from src.commands.cmd_grep import GrepCommand
+
+from src.commands.cmd_ls import LsCommand
 from src.commands.cmd_mv import MvCommand
+from src.commands.cmd_rm import RmCommand
+from src.commands.cmd_tar import cmd_tar
+from src.commands.cmd_untar import cmd_untar
+from src.commands.cmd_unzip import cmd_unzip
+from src.commands.cmd_zip import cmd_zip
 from src.history import History
 
 
@@ -37,45 +44,60 @@ class MiniShell():
             logging.info(cmd_input)
 
             if command == 'ls':
-                cmd_ls(parts)
+                ls_command = LsCommand(parts)
+                ls_command.run()
+                cmd_history.add(ls_command)
+
             elif command == 'cd':
-                cmd_cd(parts)
+                cd_command = CdCommand(parts)
+                cd_command.run()
+                cmd_history.add(cd_command)
+
             elif command == 'cat':
-                cmd_cat(parts)
+                cat_command = CatCommand(parts)
+                cat_command.run()
+                cmd_history.add(cat_command)
 
             if command == 'cp':
                 cp_command = CpCommand(parts)
                 cp_command.run()
                 cmd_history.add(cp_command)
 
-            elif command == 'history':
-                cmd_history.print()
 
-            elif command == 'undo':
-                cmd_history.undo()
 
             elif command == 'mv':
                 mv_command = MvCommand(parts)
                 mv_command.run()
                 cmd_history.add(mv_command)
 
-            # elif command == 'rm':
-            #     cmd_rm(parts)
-            # elif command == 'zip':
-            #     cmd_zip(parts)
-            # elif command == 'unzip':
-            #     cmd_unzip(parts)
-            # elif command == 'tar':
-            #     cmd_tar(parts)
-            # elif command == 'untar':
-            #     cmd_untar(parts)
-            # elif command == 'grap':
-            #     cmd_grep(parts)
-            # # elif command == 'history':
-            # #     cmd_history(parts)
-            # # elif command == 'undo':
-            # #     cmd_undo(parts)
-            #
+            elif command == 'rm':
+                rm_command = RmCommand(parts)
+                rm_command.run()
+                cmd_history.add(rm_command)
+
+            elif command == 'grep':
+                grep_command = GrepCommand(parts)
+                grep_command.run()
+                cmd_history.add(grep_command)
+
+
+            elif command == 'zip':
+                cmd_zip(parts)
+
+            elif command == 'unzip':
+                cmd_unzip(parts)
+
+            elif command == 'tar':
+                cmd_tar(parts)
+
+            elif command == 'untar':
+                cmd_untar(parts)
+
+            elif command == 'history':
+                cmd_history.print()
+
+            elif command == 'undo':
+                cmd_history.undo()
 
             elif command in ('exit', 'q'):
                 break

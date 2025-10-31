@@ -14,6 +14,7 @@ class CpCommand:
     def undo(self) -> None:
 
         path = Path(self.args[-1]) / Path(self.args[-2]).name
+
         if path.is_file():
             os.remove(path)
             print(f"Файл удалён '{path}'")
@@ -26,8 +27,8 @@ class CpCommand:
         print("Ошибка удаления: файл не найден")
         logging.error("error")
 
-
     def run(self) -> None:
+
         if len(self.args) < 3:
             print("Ошибка: нужно указать источник и назначение")
             logging.error("cp: Not enough arguments")
@@ -51,6 +52,9 @@ class CpCommand:
                     logging.error("cp: Copying directory without -r flag")
                     return
                 shutil.copytree(path_from, path_to)
+
+                print("Папка скопирована")
+                logging.info(f"cp: Successfully copied '{path_from}' to '{path_to}'")
             else:
                 shutil.copy(path_from, path_to)
             print("Файл скопирован")
