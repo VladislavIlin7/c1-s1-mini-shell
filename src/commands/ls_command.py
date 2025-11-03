@@ -3,6 +3,10 @@ import logging
 import os
 import stat
 from pathlib import Path
+from src.exceptions.exceptions import (
+    DirectoryNotFound,
+    CodeError,
+)
 
 
 class LsCommand:
@@ -21,17 +25,15 @@ class LsCommand:
         target = Path(self.args[1]) if len(self.args) > 1 and not self.args[1] == '-l' else current
 
         if not target.exists():
-            print(f"Нет такой папки '{target}'")
             logging.error(f"ls: Folder does not exist '{target}'")
-            return
+            raise DirectoryNotFound(str(target))
         if not target.is_dir():
-            print(f"Это не папка '{target}'")
             logging.error(f"ls: Target is not a directory '{target}'")
-            return
+            raise CodeError(f"Not a directory: '{target}'")
 
         items = list(target.iterdir())
         if not items:
-            print("Папка пуста")
+            print("Folder is empty")
             logging.info(f"ls: Folder is empty '{target}'")
             return
 
@@ -51,8 +53,8 @@ class LsCommand:
                     mtime = datetime.datetime.fromtimestamp(stat_info.st_mtime).strftime('%Y-%m-%d %H:%M')
                     print(f"{mode} {size:>10} {mtime} {item.name}")
                 except Exception as e:
-                    print(f"Ошибка при доступе к {item}: {e}")
                     logging.error(f"ls: Error accessing {item}: {e}")
+                    raise CodeError(str(e))
             else:
                 print(item.name)
 

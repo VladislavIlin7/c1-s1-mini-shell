@@ -2,6 +2,11 @@ import os
 import shutil
 import logging
 from pathlib import Path
+from src.exceptions.exceptions import (
+    InvalidArgumentsCount,
+    PathNotFound,
+    CodeError,
+)
 
 
 class RmCommand:
@@ -17,9 +22,8 @@ class RmCommand:
     def undo(self) -> None:
 
         if len(self.args) < 2:
-            print("Ошибка: укажите путь для удаления")
             logging.error("rm: No path provided")
-            return
+            raise InvalidArgumentsCount('rm')
 
         path = Path(self.args[-1])
         trash_path = self.backup_dir / path.name
@@ -27,21 +31,20 @@ class RmCommand:
         if trash_path.exists():
             try:
                 shutil.move(trash_path, path)
-                print("Восстановление завершено")
+                print("Restore completed")
                 logging.info(f"undo: Restored '{path}'")
             except Exception as e:
-                print(f"Ошибка при восстановлении: {e}")
+                print(f"Restore error: {e}")
                 logging.error(f"undo: Restore failed '{path}': {e}")
         else:
-            print("Нечего восстанавливать")
+            print("Nothing to restore")
             logging.warning(f"undo: Nothing to restore for '{path}'")
 
     def run(self) -> None:
 
         if len(self.args) < 2:
-            print("Ошибка: укажите путь для удаления")
             logging.error("rm: No path provided")
-            return
+            raise InvalidArgumentsCount('rm')
 
         if len(self.args) > 2 and self.args[1] == '-r':
             target = Path(self.args[2])
@@ -49,14 +52,12 @@ class RmCommand:
             target = Path(self.args[1])
 
         if target in (Path('/').resolve(), Path('..').resolve()):
-            print("Ошибка: нельзя удалить корневую или родительскую директорию")
             logging.error("rm: Attempt to delete protected path")
-            return
+            raise CodeError("Cannot remove root or parent directory")
 
         if not target.exists():
-            print("Ошибка: указанный путь не существует")
             logging.error("rm: Path does not exist")
-            return
+            raise PathNotFound(str(target))
 
         try:
             self.backup_dir.mkdir(parents=True, exist_ok=True)
@@ -69,28 +70,27 @@ class RmCommand:
 
             if target.is_file():
                 shutil.move(target, trash_path)
-                print(f"Файл удалён '{target}'")
+                print(f"File removed: '{target}'")
                 logging.info(f"rm: File moved to trash '{trash_path}'")
 
             elif target.is_dir():
                 if len(self.args) < 3 or self.args[1] != '-r':
-                    print("Ошибка: это каталог. Для удаления используйте флаг -r")
                     logging.error("rm: Missing -r flag for directory")
-                    return
+                    raise CodeError("Path is a directory. Use -r to remove directories")
 
-                confirm = input(f"Удалить каталог '{target}' со всем содержимым? (y/n): ")
+                confirm = input(f"Remove directory '{target}' with all contents? (y/n): ")
                 if confirm == 'y':
                     shutil.move(target, trash_path)
-                    print(f"Каталог '{target}' удалён")
+                    print(f"Directory removed: '{target}'")
                     logging.info(f"rm: Directory moved to trash '{trash_path}'")
                 else:
-                    print("Удаление отменено")
+                    print("Removal cancelled")
                     logging.info(f"rm: Deletion cancelled for '{target}'")
 
             else:
-                print("Ошибка: неизвестный объект")
                 logging.error("rm: Unknown object type")
+                raise CodeError("Unknown object type")
 
         except Exception as e:
-            print(f"Ошибка при удалении: {e}")
             logging.error(f"rm: Deletion error: {e}")
+            raise CodeError(str(e))

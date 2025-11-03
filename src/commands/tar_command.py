@@ -1,6 +1,11 @@
 import logging
 import tarfile
 from pathlib import Path
+from src.exceptions.exceptions import (
+    InvalidArgumentsCount,
+    DirectoryNotFound,
+    CodeError,
+)
 
 
 class TarCommand:
@@ -15,23 +20,21 @@ class TarCommand:
 
     def run(self) -> None:
         if len(self.args) != 3:
-            print("Ошибка: не верное количество аргументов")
             logging.error("TAR: Invalid argument count")
-            return
+            raise InvalidArgumentsCount('tar')
 
         folder = Path(self.args[1])
         archive = Path(self.args[2])
 
         if not folder.is_dir():
-            print(f"Ошибка: папка не найдена '{folder}'")
             logging.error(f"TAR: Source directory not found: '{folder}'")
-            return
+            raise DirectoryNotFound(str(folder))
 
         try:
             with tarfile.open(archive, "w:gz") as tar:
                 tar.add(folder, arcname=folder.name)
-            print("Архивация завершена")
+            print("Archive created")
             logging.info(f"TAR: Archive created '{archive}'")
         except Exception as e:
-            print("Ошибка при архивации")
             logging.error(f"TAR: Archiving error: {e}")
+            raise CodeError(str(e))

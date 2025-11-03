@@ -1,6 +1,11 @@
 import logging
 import zipfile
 from pathlib import Path
+from src.exceptions.exceptions import (
+    InvalidArgumentsCount,
+    ArchiveNotFound,
+    CodeError,
+)
 
 
 class UnzipCommand:
@@ -15,21 +20,19 @@ class UnzipCommand:
 
     def run(self) -> None:
         if len(self.args) != 2:
-            print("Ошибка: не верное количество аргументов")
             logging.error("UNZIP: Invalid argument count")
-            return
+            raise InvalidArgumentsCount('unzip')
 
         archive = Path(self.args[1])
         if not archive.is_file():
-            print(f"Ошибка: архив не найден '{archive}'")
             logging.error(f"UNZIP: Archive not found: '{archive}'")
-            return
+            raise ArchiveNotFound(str(archive))
 
         try:
             with zipfile.ZipFile(archive, 'r') as zipf:
                 zipf.extractall('.')
-            print("Распаковка завершена")
+            print("Archive extracted")
             logging.info(f"UNZIP: Archive extracted '{archive}'")
         except Exception as e:
-            print("Ошибка при распаковки")
             logging.error(f"UNZIP: Extraction error: {e}")
+            raise CodeError(str(e))

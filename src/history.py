@@ -4,7 +4,7 @@ import logging
 class History:
     def __init__(self):
         self.history: list[object] = []
-        self.max_commands = 10
+        self.n_commands = 10
 
     def add(self, command: object) -> None:
 
@@ -14,7 +14,7 @@ class History:
     def undo(self) -> None:
 
         if len(self.history) == 0:
-            print("История пуста")
+            print("History is empty")
             logging.info("undo: History is empty")
             return
 
@@ -23,13 +23,13 @@ class History:
         try:
             cmd.undo()
         except Exception as e:
-            print(f"Ошибка при отмене: {e}")
+            print(f"Undo error: {e}")
             logging.error(f"undo: Failed for {cmd}: {e}")
 
     def print(self, count: int) -> None:
 
         print("Последние команды:")
         if count == 0:
-            count = self.max_commands
+            count = self.n_commands
         for i, command in enumerate(self.history[-count:], start=1):
             print(f"{i}: {' '.join(command.args)}")

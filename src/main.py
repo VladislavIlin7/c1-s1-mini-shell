@@ -11,7 +11,8 @@ logging.basicConfig(
 
 
 def main():
-    MiniShell().run()
+    shell = MiniShell()
+    shell.run()
 
 if __name__ == "__main__":
     main()

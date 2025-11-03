@@ -1,6 +1,11 @@
 import logging
 import tarfile
 from pathlib import Path
+from src.exceptions.exceptions import (
+    InvalidArgumentsCount,
+    ArchiveNotFound,
+    CodeError,
+)
 
 
 class UntarCommand:
@@ -17,21 +22,19 @@ class UntarCommand:
     def run(self) -> None:
 
         if len(self.args) != 2:
-            print("Ошибка: не верное количество аргументов")
             logging.error("UNTAR: Invalid argument count")
-            return
+            raise InvalidArgumentsCount('untar')
 
         archive = Path(self.args[1])
         if not archive.is_file():
-            print(f"Ошибка: архив не найден '{archive}'")
             logging.error(f"UNTAR: Archive not found: '{archive}'")
-            return
+            raise ArchiveNotFound(str(archive))
 
         try:
             with tarfile.open(archive, 'r:gz') as tar:
                 tar.extractall('.')
-            print("Распаковка завершена")
+            print("Archive extracted")
             logging.info(f"UNTAR: Archive extracted '{archive}'")
         except Exception as e:
-            print("Ошибка при распаковки")
             logging.error(f"UNTAR: Extraction error: {e}")
+            raise CodeError(str(e))

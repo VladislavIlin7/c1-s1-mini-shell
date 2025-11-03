@@ -23,11 +23,11 @@ class CdCommand:
 
         target = Path(self.args[1]).expanduser()
         if not target.exists():
-            print(f"Ошибка: такой папки не существует '{target}'")
+            print(f"Error: Such folder does not exist '{target}'")
             logging.error(f"cd: Directory does not exist: '{target}'")
             return
         if not target.is_dir():
-            print("Ошибка: это не папка")
+            print("Error: This is not a folder")
             logging.error(f"cd: Not a directory: '{target}'")
             return
 
