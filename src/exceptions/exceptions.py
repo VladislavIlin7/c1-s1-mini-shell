@@ -23,11 +23,6 @@ class DirectoryNotFound(Exception):
         super().__init__(f"Directory not found: '{path}'.")
 
 
-class CodeError(Exception):
-    def __init__(self, error: str):
-        super().__init__(f"Unexpected error: '{error}'.")
-
-
 class PathNotFound(Exception):
     def __init__(self, path: str):
         super().__init__(f"Path not found: '{path}'.")
@@ -41,3 +36,13 @@ class NoMatchesFound(Exception):
 class ArchiveNotFound(Exception):
     def __init__(self, path: str):
         super().__init__(f"Archive not found: '{path}'.")
+
+
+class CodeError(Exception):
+    def __init__(self, error: str):
+        super().__init__(f"Unexpected error: '{error}'.")
+
+
+class EmptyHistory(Exception):
+    def __init__(self):
+        super().__init__(f"History is empty.")

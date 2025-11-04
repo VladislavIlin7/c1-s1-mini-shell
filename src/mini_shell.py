@@ -125,14 +125,14 @@ class MiniShell:
                     print(f'Command not supported: {command}')
                     logging.error("Command not supported")
             except (
-                InvalidArgumentsCount,
-                FileNotFound,
-                IsDirectory,
-                NotEnoughPermissions,
-                DirectoryNotFound,
-                PathNotFound,
-                NoMatchesFound,
-                ArchiveNotFound,
+                    InvalidArgumentsCount,
+                    FileNotFound,
+                    IsDirectory,
+                    NotEnoughPermissions,
+                    DirectoryNotFound,
+                    PathNotFound,
+                    NoMatchesFound,
+                    ArchiveNotFound,
             ) as e:
                 print(e)
                 logging.error(f"%s", e)
