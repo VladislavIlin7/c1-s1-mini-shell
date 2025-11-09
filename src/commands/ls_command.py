@@ -4,32 +4,38 @@ import os
 import stat
 from pathlib import Path
 from src.exceptions.exceptions import (
-    DirectoryNotFound,
-    CodeError,
+    PathNotFoundError,
+    ApplicationError,
+    IsNotDirectoryError,
 )
 
 
 class LsCommand:
+    """Выводит содержимое папки (аналог ls). Поддержка флага -l."""
+
     def __init__(self, args: list[str]):
         self.args = args
 
     def print(self) -> None:
-        print(f"{' '.join(self.args)}")
+        """Печатает команду, как она была введена."""
+        print(' '.join(self.args))
 
     def undo(self) -> None:
+        """Отмена не нужна (ничего не меняет)."""
         return
 
     def run(self) -> None:
+        """Печатает список файлов/папок; с -l показывает режим, размер и дату."""
         show_long = '-l' in self.args
         current = Path.cwd()
-        target = Path(self.args[1]) if len(self.args) > 1 and not self.args[1] == '-l' else current
+        target = Path(self.args[1]) if len(self.args) > 1 and self.args[1] != '-l' else current
 
         if not target.exists():
             logging.error(f"ls: Folder does not exist '{target}'")
-            raise DirectoryNotFound(str(target))
+            raise PathNotFoundError(str(target))
         if not target.is_dir():
             logging.error(f"ls: Target is not a directory '{target}'")
-            raise CodeError(f"Not a directory: '{target}'")
+            raise IsNotDirectoryError(str(target))
 
         items = list(target.iterdir())
         if not items:
@@ -54,7 +60,7 @@ class LsCommand:
                     print(f"{mode} {size:>10} {mtime} {item.name}")
                 except Exception as e:
                     logging.error(f"ls: Error accessing {item}: {e}")
-                    raise CodeError(str(e))
+                    raise ApplicationError(str(e))
             else:
                 print(item.name)
 

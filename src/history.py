@@ -1,6 +1,6 @@
 import os
 import logging
-from src.exceptions.exceptions import CodeError, EmptyHistory
+from src.exceptions.exceptions import ApplicationError, EmptyHistoryError
 
 
 class History:
@@ -40,7 +40,7 @@ class History:
             logging.info(f"history: command added '{cmd_text}'")
         except Exception as e:
             logging.error(f"history: failed to add command: {e}")
-            raise CodeError(str(e))
+            raise ApplicationError(str(e))
 
     def undo(self) -> None:
         """
@@ -78,7 +78,7 @@ class History:
                     f.write("\n".join(lines) + "\n")
         except Exception as e:
             logging.error(f"history: failed to update file after undo: {e}")
-            raise CodeError(str(e))
+            raise ApplicationError(str(e))
 
     def print(self, count: int = 0) -> None:
         """
@@ -99,4 +99,4 @@ class History:
 
         except Exception as e:
             logging.error(f"history: failed to print: {e}")
-            raise CodeError(str(e))
+            raise ApplicationError(str(e))

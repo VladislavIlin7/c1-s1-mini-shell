@@ -2,33 +2,37 @@ import logging
 import tarfile
 from pathlib import Path
 from src.exceptions.exceptions import (
-    InvalidArgumentsCount,
-    ArchiveNotFound,
-    CodeError,
+    InvalidArgumentsCountError,
+    ArchiveNotFoundError,
+    ApplicationError,
 )
 
 
 class UntarCommand:
+    """Распаковывает архив .tar.gz в текущую директорию (аналог tar -x)."""
+
     def __init__(self, args: list[str]):
         self.args = args
 
     def print(self) -> None:
-
-        print(f"{' '.join(self.args)}")
+        """Печатает команду, как она была введена."""
+        print(' '.join(self.args))
 
     def undo(self) -> None:
+        """Отмена не требуется (распаковка не изменяет существующие файлы)."""
         return
 
     def run(self) -> None:
-
+        """Распаковывает архив .tar.gz в текущую папку."""
         if len(self.args) != 2:
             logging.error("UNTAR: Invalid argument count")
-            raise InvalidArgumentsCount('untar')
+            raise InvalidArgumentsCountError('untar')
 
         archive = Path(self.args[1])
+
         if not archive.is_file():
             logging.error(f"UNTAR: Archive not found: '{archive}'")
-            raise ArchiveNotFound(str(archive))
+            raise ArchiveNotFoundError(str(archive))
 
         try:
             with tarfile.open(archive, 'r:gz') as tar:
@@ -37,4 +41,4 @@ class UntarCommand:
             logging.info(f"UNTAR: Archive extracted '{archive}'")
         except Exception as e:
             logging.error(f"UNTAR: Extraction error: {e}")
-            raise CodeError(str(e))
+            raise ApplicationError(str(e))

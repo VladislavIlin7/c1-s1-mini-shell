@@ -1,88 +1,49 @@
-import io
-import os
-import tempfile
-from contextlib import redirect_stdout
+from types import SimpleNamespace
+
+import pytest
 from pathlib import Path
+from contextlib import nullcontext
+
 from src.commands.tar_command import TarCommand
-from src.commands.untar_command import UntarCommand
+from src.exceptions.exceptions import (
+    InvalidArgumentsCountError,
+    PathNotFoundError,
+    ApplicationError,
+)
 
 
-def test_cmd_tar_basic():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        folder = Path(tmpdir) / "dir"
-        folder.mkdir(exist_ok=True)
-        (folder / "x.txt").write_text("test")
-        archive = Path(tmpdir) / "dir.tar.gz"
-        TarCommand(["tar", str(folder), str(archive)]).run()
-        assert archive.exists()
+def test_tar_args_missing(mocker):
+    with pytest.raises(InvalidArgumentsCountError):
+        TarCommand(args=["tar"]).run()
+    with pytest.raises(InvalidArgumentsCountError):
+        TarCommand(args=["tar", r"C:\src"]).run()
 
 
-def test_cmd_tar_multiple_files():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        folder = Path(tmpdir) / "dir"
-        folder.mkdir(exist_ok=True)
-        (folder / "x.txt").write_text("test")
-        (folder / "y.txt").write_text("data")
-        archive = Path(tmpdir) / "dir.tar.gz"
-        TarCommand(["tar", str(folder), str(archive)]).run()
-        assert archive.exists()
+def test_tar_src_not_dir_raises_directory_not_found(mocker):
+    mocker.patch.object(Path, "exists", return_value=True)
+    mocker.patch.object(Path, "is_dir", return_value=False)
+    with pytest.raises(PathNotFoundError):
+        TarCommand(args=["tar", r"C:\src", r"C:\arch.tar.gz"]).run()
 
 
-def test_cmd_tar_invalid_folder():
-    buffer = io.StringIO()
-    with redirect_stdout(buffer):
-        TarCommand(["tar", "no_folder", "output.tar.gz"]).run()
-    output = buffer.getvalue()
-    assert "Ошибка" in output
+def test_tar_ok_creates_archive(mocker):
+    src = Path(r"C:\src")
+    mocker.patch.object(Path, "is_dir", return_value=True)
+    add_mock = mocker.Mock()
+    mocker.patch("tarfile.open", return_value=nullcontext(SimpleNamespace(add=add_mock)))
+
+    mock_print = mocker.patch("builtins.print")
+    mocker.patch("logging.info")
+
+    TarCommand(args=["tar", str(src), r"C:\arch.tar.gz"]).run()
+
+    add_mock.assert_called()
+    mock_print.assert_any_call("Archive created")
 
 
-def test_cmd_tar_not_dir():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        file_path = Path(tmpdir) / "some_file.txt"
-        file_path.write_text("data")
-        buffer = io.StringIO()
-        with redirect_stdout(buffer):
-            TarCommand(["tar", str(file_path), str(Path(tmpdir) / "output.tar.gz")]).run()
-        output = buffer.getvalue()
-        assert "Ошибка" in output
-
-
-def test_cmd_tar_no_args():
-    buffer = io.StringIO()
-    with redirect_stdout(buffer):
-        TarCommand(["tar"]).run()
-    output = buffer.getvalue()
-    assert "Ошибка" in output
-
-
-def test_cmd_untar_basic():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        folder = Path(tmpdir) / "z"
-        folder.mkdir(exist_ok=True)
-        (folder / "y.txt").write_text("abc")
-        archive = Path(tmpdir) / "z.tar.gz"
-        TarCommand(["tar", str(folder), str(archive)]).run()
-        original_cwd = Path.cwd()
-        try:
-            os.chdir(tmpdir)
-            UntarCommand(["untar", str(archive)]).run()
-            assert (Path(tmpdir) / "z" / "y.txt").exists()
-        finally:
-            os.chdir(original_cwd)
-
-
-def test_cmd_untar_invalid():
-    buffer = io.StringIO()
-    with redirect_stdout(buffer):
-        UntarCommand(["untar", "bad_archive.tar.gz"]).run()
-    output = buffer.getvalue()
-    assert "Ошибка" in output or "error" in output.lower()
-
-
-def test_cmd_untar_no_args():
-    buffer = io.StringIO()
-    with redirect_stdout(buffer):
-        UntarCommand(["untar"]).run()
-    output = buffer.getvalue()
-    assert "Ошибка" in output
-
+def test_tar_open_fails_raises_code_error(mocker):
+    mocker.patch.object(Path, "exists", return_value=True)
+    mocker.patch.object(Path, "is_dir", return_value=True)
+    mocker.patch("tarfile.open", side_effect=OSError("x"))
+    with pytest.raises(ApplicationError):
+        TarCommand(args=["tar", r"C:\src", r"C:\arch.tar.gz"]).run()

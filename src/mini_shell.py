@@ -3,15 +3,15 @@ import sys
 from pathlib import Path
 import logging
 from src.exceptions.exceptions import (
-    InvalidArgumentsCount,
-    FileNotFound,
-    IsDirectory,
-    NotEnoughPermissions,
-    DirectoryNotFound,
-    CodeError,
-    PathNotFound,
-    NoMatchesFound,
-    ArchiveNotFound,
+    InvalidArgumentsCountError,
+    PathNotFoundError,
+    IsNotFileError,
+    NotEnoughPermissionsError,
+    PathNotFoundError,
+    ApplicationError,
+    PathNotFoundError,
+    NoMatchesFoundError,
+    ArchiveNotFoundError,
 )
 
 from src.commands.cat_command import CatCommand
@@ -125,18 +125,18 @@ class MiniShell:
                     print(f'Command not supported: {command}')
                     logging.error("Command not supported")
             except (
-                    InvalidArgumentsCount,
-                    FileNotFound,
-                    IsDirectory,
-                    NotEnoughPermissions,
-                    DirectoryNotFound,
-                    PathNotFound,
-                    NoMatchesFound,
-                    ArchiveNotFound,
+                    InvalidArgumentsCountError,
+                    PathNotFoundError,
+                    IsNotFileError,
+                    NotEnoughPermissionsError,
+                    PathNotFoundError,
+                    PathNotFoundError,
+                    NoMatchesFoundError,
+                    ArchiveNotFoundError,
             ) as e:
                 print(e)
                 logging.error(f"%s", e)
             except Exception as e:
-                err = CodeError(str(e))
+                err = ApplicationError(str(e))
                 print(err)
                 logging.error("Unhandled exception")
